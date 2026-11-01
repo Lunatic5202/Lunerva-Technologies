@@ -4,16 +4,16 @@ import { components } from '../domain/registry'
 import { controlsMessage, previewDocument, previewFiles } from '../preview/documents'
 import type { BenchmarkRecord } from '../storage/database'
 
-type Props = { mode: 'playground' | 'performance'; initialComponentId?: string; records: BenchmarkRecord[]; onRecord: (record: BenchmarkRecord) => void; onCopy: (text: string) => void }
+type Props = { mode: 'playground' | 'performance'; initialComponentId?: string; defaultMotionPreference?: 'system'|'reduced'; records: BenchmarkRecord[]; onRecord: (record: BenchmarkRecord) => void; onCopy: (text: string) => void }
 const sizes = [
   { label:'Desktop · 1920 × 1080', width:1920, height:1080 }, { label:'Desktop · 1440 × 900', width:1440, height:900 }, { label:'Desktop · 1280 × 720', width:1280, height:720 },
   { label:'Tablet · 1024 × 768', width:1024, height:768 }, { label:'Tablet · 768 × 1024', width:768, height:1024 },
   { label:'Mobile · 430 × 932', width:430, height:932 }, { label:'Mobile · 390 × 844', width:390, height:844 }, { label:'Mobile · 375 × 812', width:375, height:812 }, { label:'Mobile · 360 × 800', width:360, height:800 },
 ]
 
-export default function PreviewWorkspace({ mode, initialComponentId, records, onRecord, onCopy }: Props) {
+export default function PreviewWorkspace({ mode, initialComponentId, defaultMotionPreference='system', records, onRecord, onCopy }: Props) {
   const [componentId,setComponentId]=useState(initialComponentId??components.find(item=>item.previewAvailable)?.id??'')
-  const [motionPreference,setMotionPreference]=useState<'system'|'normal'|'reduced'>('system')
+  const [motionPreference,setMotionPreference]=useState<'system'|'normal'|'reduced'>(defaultMotionPreference)
   const [systemReduced,setSystemReduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const reduced=motionPreference==='reduced'||(motionPreference==='system'&&systemReduced)
   const [preset,setPreset]=useState('Desktop · 1440 × 900'),[width,setWidth]=useState(1440),[height,setHeight]=useState(900)

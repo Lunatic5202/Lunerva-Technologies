@@ -36,3 +36,12 @@ body{font-family:var(--body)}.preview-workspace{min-height:560px;border:1px soli
   ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 1ms !important; }
   .nav-group > button { transition-duration: 1ms !important; }
 }
+
+.motion-reduced *, .motion-reduced *::before, .motion-reduced *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: .01ms !important;
+}
+.motion-setting-label { display: grid; gap: 7px; min-width: 170px; }
+.motion-setting-label select { min-height: 34px; padding: 0 9px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 3px; }
