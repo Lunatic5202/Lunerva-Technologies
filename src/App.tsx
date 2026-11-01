@@ -1,62 +1,318 @@
-import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence } from 'motion/react'
+import { ArrowUpRight } from 'lucide-react'
+import { countFor, filters, nav, projects, type Filter, type Project } from './data/projects'
+import { Header, Mark } from './components/Header'
+import { Hero } from './components/Hero'
+import { MagneticLink } from './components/MagneticLink'
+import { ProjectRow } from './components/ProjectRow'
+import { Principles } from './components/Principles'
+import { Reveal } from './components/Reveal'
+import { SectionLabel } from './components/ScrambleText'
+import { ScrubText } from './components/ScrubText'
+import { StatusMarquee } from './components/StatusMarquee'
+import { dispatches } from './data/journal'
+import { experiments } from './data/labs'
 
-type ProjectLink = { label: string; href: string }
-type Project = { slug: string; number: string; name: string; category: string; status: 'In development' | 'Released'; description: string; kind: string; discipline: string; image: string; imageAlt: string; links: ProjectLink[] }
-const projects: Project[] = [
-  { slug: 'luna', number: '01', name: 'LUNA', category: 'Software · Music', status: 'In development', description: 'An offline-first Android music player with a live visualizer and color-shifting interface that responds to the music.', kind: 'luna', discipline: 'Flagship Projects', image: 'https://raw.githubusercontent.com/Lunatic5202/Luna/main/docs/screenshots/player.jpg', imageAlt: 'LUNA Android now-playing screen with its live visualizer', links: [{ label: 'Explore LUNA', href: 'https://github.com/Lunatic5202/Luna' }, { label: 'Latest release', href: 'https://github.com/Lunatic5202/Luna/releases/latest' }] },
-  { slug: 'twice-told-tale', number: '02', name: 'Twice-Told Tale', category: 'Interactive · Visual novel', status: 'Released', description: 'A 30-day otome visual novel where Scaramouche and the Wanderer exist at the same time, and a magical Folio records what happens.', kind: 'tale', discipline: 'Flagship Projects', image: 'https://raw.githubusercontent.com/Lunatic5202/Twice-told-tale/main/game/images/ui/title.png', imageAlt: 'Official Twice-Told Tale title artwork from the game repository', links: [{ label: 'Play on itch.io', href: 'https://lunaticlayman.itch.io/twice-told-tale' }, { label: 'Source & credits', href: 'https://github.com/Lunatic5202/Twice-told-tale' }] },
-  { slug: 'what-the-water-keeps', number: '03', name: 'What the Water Keeps', category: 'Interactive · 2D Souls-like', status: 'In development', description: 'A gentle-on-the-surface 2D Souls-like platformer. Follow Lumi, a lantern-bearing wanderer, through lands shaped by the seven sins.', kind: 'water', discipline: 'Flagship Projects', image: 'https://raw.githubusercontent.com/Lunatic5202/what-the-water-keeps/main/assets/portraits/lumi/lumi_neutral.png', imageAlt: 'Lumi, the lantern-bearing wanderer, in the game’s original character art', links: [{ label: 'Follow development', href: 'https://github.com/Lunatic5202/what-the-water-keeps' }] },
+const ProjectDetail = lazy(() => import('./components/ProjectDetail').then(m => ({ default: m.ProjectDetail })))
+
+const PROJECT_HASH = /^#project\/([\w-]+)$/
+const projectFromHash = () => {
+  const match = window.location.hash.match(PROJECT_HASH)
+  return match ? (projects.find(p => p.slug === match[1]) ?? null) : null
+}
+const navHrefs: string[] = nav.map(item => item.href)
+const sectionFromHash = () => (navHrefs.includes(window.location.hash) ? window.location.hash : '#home')
+
+const divisions = [
+  ['01 / SOFTWARE', 'Digital', 'Software products, consumer applications and digital utilities.'],
+  ['02 / ENTERTAINMENT', 'Interactive', 'Games, interactive entertainment and narrative experiences.'],
+  ['03 / EXPLORATION', 'Labs', 'Experiments, prototypes and exploratory research.'],
 ]
-const filters = ['All work', 'Flagship Projects', 'Products & Utilities', 'Experiments', 'Open Source']
-const nav = [['Home', '#home'], ['Work', '#work'], ['Labs', '#labs'], ['Journal', '#journal'], ['About', '#about'], ['Contact', '#contact']]
-function Mark({ className = '' }: { className?: string }) { return <span className={'lunevra-mark ' + className} aria-hidden="true"><i /><b /></span> }
-function Artwork({ project }: { project: Project }) {
-  return <div className={'project-art art-' + project.kind}>
-    <img src={project.image} alt={project.imageAlt} loading="lazy" decoding="async" />
-    <span className="art-source">{project.kind === 'luna' ? 'NOW PLAYING / ANDROID' : project.kind === 'tale' ? 'OFFICIAL TITLE ART' : 'CHARACTER STUDY / LUMI'}</span>
-    <span className="art-index">{project.number} / LUNEVRA</span>
-  </div>
-}
-function ProjectDetail({ project, onClose }: { project: Project; onClose: () => void }) {
-  const closeButton = useRef<HTMLButtonElement>(null)
-  useEffect(() => {
-    closeButton.current?.focus()
-    const close = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
-      if (event.key === 'Tab') {
-        const focusable = document.querySelectorAll<HTMLElement>('.project-detail button, .project-detail a, .project-detail [tabindex]:not([tabindex="-1"])')
-        const first = focusable[0], last = focusable[focusable.length - 1]
-        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
-        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
-      }
-    }
-    window.addEventListener('keydown', close)
-    document.body.style.overflow = 'hidden'
-    return () => { window.removeEventListener('keydown', close); document.body.style.overflow = '' }
-  }, [onClose])
-  return <div className="detail-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}><article className="project-detail" role="dialog" aria-modal="true" aria-labelledby="detail-title"><button ref={closeButton} className="detail-close" onClick={onClose} aria-label="Close project details"><X size={18} /></button><Artwork project={project} /><div className="detail-copy"><span className="eyebrow">PROJECT {project.number} / {project.category}</span><h2 id="detail-title">{project.name}</h2><p>{project.description}</p><div className="detail-facts"><span>STATUS <b>{project.status}</b></span><span>STUDIO <b>LUNEVRA {project.category.startsWith('Software') ? 'Digital' : 'Interactive'}</b></span><span>ARTWORK <b>From the project repository</b></span></div><div className="detail-links">{project.links.map(link => <a className="text-link" href={link.href} target="_blank" rel="noreferrer" key={link.href}>{link.label}<ArrowUpRight size={14} /></a>)}</div>{project.slug === 'twice-told-tale' && <p className="project-note">A non-commercial fan work; not affiliated with HoYoverse.</p>}<button className="text-link detail-back" onClick={onClose}><ArrowLeft size={15} /> Back to selected work</button></div></article></div>
-}
+
 export default function App() {
-  const [filter, setFilter] = useState('All work'), [selected, setSelected] = useState<Project | null>(null), [menuOpen, setMenuOpen] = useState(false), [active, setActive] = useState(window.location.hash || '#home')
-  const visibleProjects = projects.filter(project => filter === 'All work' || project.discipline === filter)
+  const [filter, setFilter] = useState<Filter>('All work')
+  const [selected, setSelected] = useState<Project | null>(projectFromHash)
+  const [active, setActive] = useState(sectionFromHash)
+
+  // Keep the last project mounted while the dialog plays its exit animation.
+  const lastSelected = useRef<Project | null>(null)
+  if (selected) lastSelected.current = selected
+
+  const visible = projects.filter(p => filter === 'All work' || p.discipline === filter)
+
+  const opener = useRef<HTMLElement | null>(null)
+  const restoreFocus = useCallback(() => opener.current?.focus(), [])
+
+  const open = useCallback((project: Project) => {
+    opener.current = document.activeElement as HTMLElement | null
+    window.location.hash = 'project/' + project.slug
+  }, [])
+  const close = useCallback(() => {
+    window.history.replaceState(null, '', '#work')
+    setSelected(null)
+  }, [])
+
   useEffect(() => {
-    const items = document.querySelectorAll<HTMLElement>('.reveal:not(.is-visible)')
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) { items.forEach(item => item.classList.add('is-visible')); return }
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target) } }), { threshold: 0.12, rootMargin: '0px 0px -35px 0px' })
-    items.forEach(item => observer.observe(item))
-    return () => observer.disconnect()
-  }, [filter])
-  useEffect(() => { const onHash = () => setActive(window.location.hash || '#home'); window.addEventListener('hashchange', onHash); const onScroll = () => { const ids = nav.map(([, href]) => href.slice(1)); const current = ids.map(id => document.getElementById(id)).filter((element): element is HTMLElement => Boolean(element)).filter(element => element.getBoundingClientRect().top < 180).at(-1); if (current) setActive('#' + current.id) }; window.addEventListener('scroll', onScroll, { passive: true }); return () => { window.removeEventListener('hashchange', onHash); window.removeEventListener('scroll', onScroll) } }, [])
-  useEffect(() => { document.title = selected ? selected.name + ' — LUNEVRA Technologies' : 'LUNEVRA Technologies — Independent by design'; document.body.classList.toggle('dialog-open', Boolean(selected)); return () => document.body.classList.remove('dialog-open') }, [selected])
-  return <><a className="skip-link" href="#main">Skip to content</a><header className="site-header"><a className="wordmark" href="#home" aria-label="LUNEVRA Technologies home"><Mark /><span>LUNEVRA<small>TECHNOLOGIES</small></span></a><nav className="desktop-nav" aria-label="Main navigation">{nav.map(([label, href]) => <a key={href} className={active === href ? 'current' : ''} href={href}>{label}</a>)}</nav><a className="header-index" href="#work"><span className="status-dot" /> INDEPENDENT STUDIO <ArrowUpRight size={13} /></a><button className="menu-toggle" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>{menuOpen && <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(([label, href]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}<ArrowUpRight size={14} /></a>)}</nav>}</header>
-  <main id="main"><section className="hero" id="home"><div className="hero-meta"><span>INDEPENDENT TECHNOLOGY STUDIO</span><span>EST. 2026&nbsp; / &nbsp;01—03</span></div><div className="hero-stage"><div className="hero-copy"><p className="hero-kicker"><i /> BUILT WITH INTENTION</p><h1>LUNEVRA<span>TECHNOLOGIES</span></h1><p className="hero-tagline">Independent by design.<br /><em>Built to create.</em></p><a className="hero-cta" href="#work">Explore selected work <ArrowDown size={15} /></a></div><div className="hero-visual" aria-hidden="true"><div className="hero-coordinate coordinate-one">FIG. 01&nbsp; / &nbsp;LUNAR SIGNAL</div><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" /><div className="hero-eclipse"><i /></div><div className="hero-star">✳</div><div className="hero-crosshair crosshair-h" /><div className="hero-crosshair crosshair-v" /><div className="hero-coordinate coordinate-two">INDEPENDENT&nbsp; / &nbsp;CREATIVE&nbsp; / &nbsp;TECHNOLOGY</div></div></div><div className="hero-foot"><span>SOFTWARE&nbsp; · &nbsp;APPLICATIONS&nbsp; · &nbsp;INTERACTIVE WORLDS</span><span>SCROLL TO DISCOVER <ArrowDown size={13} /></span></div></section>
-  <section className="manifesto" aria-label="Studio positioning"><span className="section-number">01 / POSITION</span><p className="reveal">We build <em>digital products</em> and interactive experiences with a distinct point of view.</p><span className="manifesto-mark"><Mark /></span></section>
-  <section className="work-section section-wrap" id="work"><div className="section-top reveal"><div><span className="section-number">02 / SELECTED WORK</span><h2>Made to mean<br /><em>something.</em></h2></div><p className="section-intro">A small, considered body of work.<br />Each project starts with a reason to exist.</p></div><div className="filter-bar" role="group" aria-label="Filter work by category">{filters.map(item => <button key={item} className={filter === item ? 'selected' : ''} onClick={() => setFilter(item)} aria-pressed={filter === item}>{item}<span>{item === 'All work' || item === 'Flagship Projects' ? '03' : '00'}</span></button>)}</div><div className="project-list">{visibleProjects.length ? visibleProjects.map(project => <article className={'project-row reveal project-' + project.kind} key={project.slug}><button className="project-image-button" onClick={() => setSelected(project)} aria-label={'View ' + project.name + ' details'}><Artwork project={project} /><span className="image-open"><ArrowUpRight size={17} /></span></button><div className="project-info"><div className="project-heading"><span className="project-number">{project.number}</span><div><span className="eyebrow">{project.category}</span><h3>{project.name}</h3></div><span className={'project-status ' + (project.status === 'Released' ? 'released' : '')}><i />{project.status}</span></div><p>{project.description}</p><div className="project-foot"><span>LUNEVRA {project.category.startsWith('Software') ? 'DIGITAL' : 'INTERACTIVE'}</span><div className="project-actions"><a className="text-link" href={project.links[0].href} target="_blank" rel="noreferrer">{project.links[0].label}<ArrowUpRight size={13} /></a><button className="text-link" onClick={() => setSelected(project)}>Details <ArrowRight size={15} /></button></div></div></div></article>) : <div className="empty-work"><span>IN DEVELOPMENT</span><p>New work is taking shape.<br />This space will grow as projects are ready to share.</p></div>}</div></section>
-  <section className="labs-section" id="labs"><div className="section-wrap labs-inner"><div className="labs-heading reveal"><div><span className="section-number">03 / LUNEVRA LABS</span><h2>Room to<br /><em>wonder.</em></h2></div><span className="lab-coordinate">OPEN ENDED BY DESIGN&nbsp; / &nbsp;L—LAB</span></div><div className="labs-body reveal"><div className="lab-symbol"><div className="lab-grid"/><div className="lab-crescent"/><span>FIELD STUDY / 001</span></div><div className="labs-copy"><p>A place for experiments, prototypes and questions worth following. Some ideas become products. Others teach us what to make next.</p><div className="lab-tags"><span>INTERFACE STUDIES</span><span>GRAPHICS</span><span>PROTOTYPES</span><span>RESEARCH</span></div><span className="quiet-status"><i /> No public experiments yet</span></div></div></div></section>
-  <section className="principles section-wrap" id="about"><div className="principle-title reveal"><span className="section-number">04 / A STUDIO, BY DESIGN</span><h2>Independent<br /><em>by nature.</em></h2><p>LUNEVRA is an independent, founder-led technology studio creating software products, digital applications and interactive entertainment.</p></div><div className="principle-list reveal"><div><span>01</span><h3>Purposeful technology.</h3><p>Make tools and experiences for a reason. Let usefulness and feeling sit side by side.</p></div><div><span>02</span><h3>Intentional design.</h3><p>Give every interaction, detail and decision the care it deserves.</p></div><div><span>03</span><h3>Creative freedom.</h3><p>Independence makes space to explore ideas on their own terms.</p></div></div></section>
-  <section className="divisions section-wrap" aria-labelledby="divisions-heading"><div className="divisions-heading reveal"><span className="section-number">05 / CREATIVE PRACTICE</span><h2 id="divisions-heading">One studio.<br /><em>Many directions.</em></h2></div><div className="division-list reveal"><article><span>01 / SOFTWARE</span><h3>LUNEVRA <em>Digital</em></h3><p>Software products, consumer applications and digital utilities.</p><ArrowUpRight /></article><article><span>02 / ENTERTAINMENT</span><h3>LUNEVRA <em>Interactive</em></h3><p>Games, interactive entertainment and narrative experiences.</p><ArrowUpRight /></article><article><span>03 / EXPLORATION</span><h3>LUNEVRA <em>Labs</em></h3><p>Experiments, prototypes and exploratory research.</p><ArrowUpRight /></article></div><p className="division-note">Creative areas within one independent studio.</p></section>
-  <section className="journal-section" id="journal"><div className="section-wrap journal-inner"><div className="reveal"><span className="section-number">06 / JOURNAL</span><h2>Notes from<br /><em>the process.</em></h2></div><div className="journal-empty reveal"><span>DISPATCHES / 000</span><p>Development notes, ideas and studio updates will find their place here.</p><span className="quiet-status"><i /> No dispatches published</span></div></div></section>
-  <section className="contact-section section-wrap" id="contact"><div className="contact-overline"><span className="section-number">07 / CONTACT</span><span>OPEN TO THE NEXT GOOD IDEA</span></div><h2 className="reveal">Something on<br />your <em>mind?</em></h2><p>For now, find LUNEVRA on GitHub.</p><a className="contact-link" href="https://github.com/Lunatic5202" target="_blank" rel="noreferrer">Visit GitHub <ArrowUpRight size={17} /></a><div className="contact-orbit" aria-hidden="true"><Mark /></div></section></main>
-  <footer className="site-footer"><a className="wordmark footer-wordmark" href="#home"><Mark /><span>LUNEVRA<small>TECHNOLOGIES</small></span></a><span>INDEPENDENT BY DESIGN. BUILT TO CREATE.</span><span>© 2026 LUNEVRA TECHNOLOGIES</span><a href="#home" aria-label="Back to top">BACK TO TOP ↑</a></footer>{selected && <ProjectDetail project={selected} onClose={() => setSelected(null)} />}</>
+    const onHash = () => {
+      setSelected(projectFromHash())
+      if (!PROJECT_HASH.test(window.location.hash)) setActive(sectionFromHash())
+    }
+    let frame = 0
+    const onScroll = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const current = navHrefs
+          .map(href => document.getElementById(href.slice(1)))
+          .filter((el): el is HTMLElement => Boolean(el))
+          .filter(el => el.getBoundingClientRect().top < 180)
+          .at(-1)
+        if (current) setActive('#' + current.id)
+      })
+    }
+    window.addEventListener('hashchange', onHash)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('hashchange', onHash)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    document.title = selected
+      ? selected.name + ' — LUNEVRA Technologies'
+      : 'LUNEVRA Technologies — Independent by design'
+  }, [selected])
+
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <div>
+        <Header active={active} />
+        <main id="main">
+          <Hero />
+          <StatusMarquee />
+
+          <section className="manifesto" aria-label="Studio positioning">
+            <SectionLabel text="01 / POSITION" />
+            <ScrubText
+              parts={[
+                { text: 'We build' },
+                { text: 'digital products', em: true },
+                { text: 'and interactive experiences with a distinct point of view.' },
+              ]}
+            />
+            <span className="manifesto-mark">
+              <Mark />
+            </span>
+          </section>
+
+          <section className="work-section section-wrap" id="work">
+            <Reveal className="section-top">
+              <div>
+                <SectionLabel text="02 / SELECTED WORK" />
+                <h2>
+                  Made to mean
+                  <br />
+                  <em>something.</em>
+                </h2>
+              </div>
+              <p className="section-intro">
+                A small, considered body of work.
+                <br />
+                Each project starts with a reason to exist.
+              </p>
+            </Reveal>
+            <div className="filter-bar" role="group" aria-label="Filter work by category">
+              {filters.map(item => (
+                <button
+                  key={item}
+                  className={filter === item ? 'selected' : ''}
+                  onClick={() => setFilter(item)}
+                  aria-pressed={filter === item}
+                >
+                  {item}
+                  <span>{countFor(item)}</span>
+                </button>
+              ))}
+            </div>
+            <div className="project-list">
+              <AnimatePresence mode="wait" initial={false}>
+                {visible.length ? (
+                  <div key={filter} className="project-group">
+                    {visible.map(project => (
+                      <ProjectRow key={project.slug} project={project} onOpen={open} />
+                    ))}
+                  </div>
+                ) : (
+                  <Reveal key="empty" className="empty-work">
+                    <span>IN DEVELOPMENT</span>
+                    <p>
+                      New work is taking shape.
+                      <br />
+                      This space will grow as projects are ready to share.
+                    </p>
+                  </Reveal>
+                )}
+              </AnimatePresence>
+            </div>
+          </section>
+
+          <section className="labs-section" id="labs">
+            <div className="section-wrap labs-inner">
+              <Reveal className="labs-heading">
+                <div>
+                  <SectionLabel text="03 / LUNEVRA LABS" />
+                  <h2>
+                    Room to
+                    <br />
+                    <em>wonder.</em>
+                  </h2>
+                </div>
+                <span className="lab-coordinate">OPEN ENDED BY DESIGN&nbsp; / &nbsp;L—LAB</span>
+              </Reveal>
+              <Reveal className="labs-body" delay={0.1}>
+                <div className="lab-symbol">
+                  <div className="lab-grid" />
+                  <div className="lab-crescent" />
+                  <span>FIELD STUDY / 001</span>
+                </div>
+                <div className="labs-copy">
+                  <p>
+                    A place for experiments, prototypes and questions worth following. Some ideas become products. Others
+                    teach us what to make next.
+                  </p>
+                  <div className="lab-tags">
+                    <span>INTERFACE STUDIES</span>
+                    <span>GRAPHICS</span>
+                    <span>PROTOTYPES</span>
+                    <span>RESEARCH</span>
+                  </div>
+                  {experiments.length ? (
+                    <ul className="entry-list">
+                      {experiments.map(item => (
+                        <li key={item.slug}>
+                          <span>
+                            {item.kind.toUpperCase()} · {item.status.toUpperCase()}
+                          </span>
+                          <h3>{item.href ? <a href={item.href} target="_blank" rel="noreferrer">{item.title}</a> : item.title}</h3>
+                          <p>{item.summary}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="quiet-status">
+                      <i /> No public experiments yet
+                    </span>
+                  )}
+                </div>
+              </Reveal>
+            </div>
+          </section>
+
+          <Principles />
+
+          <section className="divisions section-wrap" aria-labelledby="divisions-heading">
+            <Reveal className="divisions-heading">
+              <SectionLabel text="05 / CREATIVE PRACTICE" />
+              <h2 id="divisions-heading">
+                One studio.
+                <br />
+                <em>Many directions.</em>
+              </h2>
+            </Reveal>
+            <div className="division-list">
+              {divisions.map(([label, name, body], i) => (
+                <Reveal as="article" key={name} delay={i * 0.1}>
+                  <span>{label}</span>
+                  <h3>
+                    LUNEVRA <em>{name}</em>
+                  </h3>
+                  <p>{body}</p>
+                  <ArrowUpRight aria-hidden="true" />
+                </Reveal>
+              ))}
+            </div>
+            <p className="division-note">Creative areas within one independent studio.</p>
+          </section>
+
+          <section className="journal-section" id="journal">
+            <div className="section-wrap journal-inner">
+              <Reveal>
+                <SectionLabel text="06 / JOURNAL" />
+                <h2>
+                  Notes from
+                  <br />
+                  <em>the process.</em>
+                </h2>
+              </Reveal>
+              {dispatches.length ? (
+                <Reveal className="journal-empty" delay={0.1}>
+                  <ul className="entry-list">
+                    {dispatches.map(item => (
+                      <li key={item.slug}>
+                        <span>
+                          {item.kind.toUpperCase()} · {item.date}
+                        </span>
+                        <h3>{item.href ? <a href={item.href}>{item.title}</a> : item.title}</h3>
+                        <p>{item.summary}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              ) : (
+                <Reveal className="journal-empty" delay={0.1}>
+                  <span>DISPATCHES / 000</span>
+                  <p>Development notes, ideas and studio updates will find their place here.</p>
+                  <span className="quiet-status">
+                    <i /> No dispatches published
+                  </span>
+                </Reveal>
+              )}
+            </div>
+          </section>
+
+          <section className="contact-section section-wrap" id="contact">
+            <div className="contact-overline">
+              <SectionLabel text="07 / CONTACT" />
+              <span>OPEN TO THE NEXT GOOD IDEA</span>
+            </div>
+            <Reveal as="h2">
+              Something on
+              <br />
+              your <em>mind?</em>
+            </Reveal>
+            <p>For now, find LUNEVRA on GitHub.</p>
+            <MagneticLink className="contact-link" href="https://github.com/Lunatic5202" external>
+              Visit GitHub <ArrowUpRight size={17} />
+            </MagneticLink>
+            <div className="contact-orbit" aria-hidden="true">
+              <Mark />
+            </div>
+          </section>
+        </main>
+        <footer className="site-footer">
+          <a className="wordmark footer-wordmark" href="#home">
+            <Mark />
+            <span>
+              LUNEVRA<small>TECHNOLOGIES</small>
+            </span>
+          </a>
+          <span>INDEPENDENT BY DESIGN. BUILT TO CREATE.</span>
+          <span>© 2026 LUNEVRA TECHNOLOGIES</span>
+          <a href="#home" aria-label="Back to top">
+            BACK TO TOP ↑
+          </a>
+        </footer>
+      </div>
+      {lastSelected.current && (
+        <Suspense fallback={null}>
+          <ProjectDetail project={lastSelected.current} open={Boolean(selected)} onClose={close} restoreFocus={restoreFocus} />
+        </Suspense>
+      )}
+    </>
+  )
 }
