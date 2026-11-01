@@ -65,3 +65,9 @@ body{font-family:var(--body)}.preview-workspace{min-height:560px;border:1px soli
 
 .preview-scaled { transition: width 280ms cubic-bezier(.2,.75,.22,1), height 280ms cubic-bezier(.2,.75,.22,1), transform 280ms cubic-bezier(.2,.75,.22,1); animation: preview-arrive 280ms ease-out both; }
 @keyframes preview-arrive { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: blur(0); } }
+
+.mini-signal-art { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; gap:8px; padding:0 12%; overflow:hidden; background:radial-gradient(ellipse at 60% 45%,#202a34,#090b0d 68%); }
+.mini-signal-art span { color:#91a0ae; font:6px var(--mono); letter-spacing:.14em; }
+.mini-signal-art b { color:#e7edf2; font:400 clamp(14px,2vw,23px)/1 var(--heading); letter-spacing:-.04em; }
+.mini-signal-art i { position:absolute; left:-10%; right:75%; top:50%; height:1px; background:linear-gradient(90deg,transparent,#eff8ff,#8bb5d4,transparent); box-shadow:0 0 12px #d5efff; animation:mini-signal-pass 3.8s ease-in-out infinite; }
+@keyframes mini-signal-pass { 0%,15% { left:-10%; right:75%; opacity:0; } 45% { opacity:.8; } 85%,100% { left:110%; right:-15%; opacity:0; } }
