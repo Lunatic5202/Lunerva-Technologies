@@ -24,10 +24,15 @@ These are working divisions of one studio, not separate legal entities.
 
 ## Repository contents
 
+- [LUNEVRA Component Observatory](docs/OBSERVATORY-README.md) — local component catalogue and frontend experimentation workspace.
 - [Founder's Handbook](docs/FOUNDERS-HANDBOOK.md)
 - [Component Observatory Specification](docs/COMPONENT-OBSERVATORY-SPEC.md)
 - [OpenCode Implementation Prompt](docs/OPENCODE-IMPLEMENTATION-PROMPT.md)
 - [Frontend Animation & Component Resources](docs/ANIMATION-RESOURCES.md)
+
+## Run the Observatory
+
+Requires Node.js and pnpm. From the repository root, run `pnpm install` and `pnpm dev` to start the local application. See the [Observatory guide](docs/OBSERVATORY-README.md) for features, limits and provenance notes.
 
 ## Operating principles
 
