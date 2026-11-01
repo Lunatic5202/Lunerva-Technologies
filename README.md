@@ -2,51 +2,44 @@
 
 **Independent by design. Built to create.**
 
-LUNEVRA Technologies is a founder-led independent technology studio focused on software products, digital applications and interactive entertainment.
+The public-facing portfolio for LUNEVRA Technologies, an independent, founder-led technology studio working across software, digital applications and interactive entertainment.
 
-The studio currently operates as a one-person operation. Its structure and public claims should reflect its actual size and capabilities.
+## The site
 
-## Current portfolio
+- **Home** — cinematic studio introduction and brand identity.
+- **Selected work** — LUNA, Twice-Told Tale and What the Water Keeps, with truthful development statuses and expandable project summaries.
+- **LUNEVRA Labs** — a home for experiments and prototypes, with no fabricated work listed.
+- **About** — studio philosophy and creative practice.
+- **Journal** — an editorial structure ready for future dispatches.
+- **Contact** — links to the studio's existing GitHub presence.
 
-| Project | Area | Status |
-|---|---|---|
-| LUNA | Consumer software / music | In development |
-| Twice-Told Tale | Interactive entertainment / visual novel | Released |
-| What the Water Keeps | Game development | In development |
+Portfolio artwork is composed in CSS as editorial visual studies. It is not represented as product screenshots. No project release URLs, contact email, company metrics or unverified history are claimed.
 
-## Internal divisions
+## Development
 
-- **LUNEVRA Digital** — consumer applications, software products and digital utilities.
-- **LUNEVRA Interactive** — games, interactive storytelling and original entertainment IP.
-- **LUNEVRA Labs** — experiments, prototypes and research. Initially an informal internal function.
+Requires Node.js and pnpm.
 
-These are working divisions of one studio, not separate legal entities.
+```sh
+pnpm install
+pnpm dev
+```
 
-## Repository contents
+Create a production build with:
 
-- [LUNEVRA Component Observatory](docs/OBSERVATORY-README.md) — local component catalogue and frontend experimentation workspace.
-- [Founder's Handbook](docs/FOUNDERS-HANDBOOK.md)
-- [Component Observatory Specification](docs/COMPONENT-OBSERVATORY-SPEC.md)
-- [OpenCode Implementation Prompt](docs/OPENCODE-IMPLEMENTATION-PROMPT.md)
-- [Frontend Animation & Component Resources](docs/ANIMATION-RESOURCES.md)
+```sh
+pnpm build
+```
 
-## Run the Observatory
+Preview the build locally with `pnpm preview`.
 
-Requires Node.js and pnpm. From the repository root, run `pnpm install` and `pnpm dev` to start the local application. See the [Observatory guide](docs/OBSERVATORY-README.md) for features, limits and provenance notes.
+## Structure
 
-## Operating principles
+- `src/App.tsx` — homepage, work filtering, accessible mobile navigation and project detail dialogs.
+- `src/styles.css` — responsive visual system, original project art treatments, transitions and reduced-motion rules.
+- `index.html` — document metadata and social preview metadata.
 
-1. Quality over quantity.
-2. Creative independence.
-3. Maintainable engineering.
-4. Thoughtful user experience.
-5. Sustainable growth.
-6. Honest representation of the studio and its products.
+The former Component Observatory remains documented in `docs/` as a separate local experiment; it is no longer the public website.
 
-## Status
+## Studio
 
-LUNEVRA is an early-stage, founder-led studio. This repository is its initial company documentation and planning hub.
-
----
-
-*Independent by design. Built to create.*
+LUNEVRA Digital, LUNEVRA Interactive and LUNEVRA Labs describe internal creative areas of one independent studio, not separate companies or staffed departments.
