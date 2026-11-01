@@ -13,7 +13,9 @@ The public-facing portfolio for LUNEVRA Technologies, an independent, founder-le
 - **Journal** — an editorial structure ready for future dispatches.
 - **Contact** — links to the studio's existing GitHub presence.
 
-Portfolio artwork is composed in CSS as editorial visual studies. It is not represented as product screenshots. No project release URLs, contact email, company metrics or unverified history are claimed.
+Portfolio artwork is loaded from the projects' own public repositories: LUNA's Android player screenshot, Twice-Told Tale's title artwork, and Lumi's character art from What the Water Keeps. Each is labelled by its real context. Project cards link to the actual repositories, LUNA release page and Twice-Told Tale's itch.io release. The fan-work relationship for Twice-Told Tale is disclosed. No project metrics, contact email, or unverified history are claimed.
+
+The experience uses staggered hero entrances, slow orbital motion, scroll-triggered section reveals and restrained image transitions. Essential content remains available with reduced motion enabled.
 
 ## Development
 
