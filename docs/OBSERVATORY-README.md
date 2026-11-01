@@ -8,8 +8,8 @@ Requires Node.js and pnpm. Run `pnpm install`, then `pnpm dev` and open the loca
 
 ## Included in this first implementation
 
-- Dashboard and searchable, filterable, sortable component catalogue.
-- Original local visual studies and third party discovery references with clear review status.
+- Dashboard with real recently viewed history and direct workflow shortcuts; searchable, filterable, sortable component catalogue with platform aware keyboard search.
+- Component detail views with working Overview, Source & Usage and Licence tabs, plus original local visual studies and clearly marked third party discovery references.
 - Isolated Playground with viewport presets, custom dimensions, motion preference, canvas color, fullscreen, controls and copyable HTML/CSS source.
 - Performance Lab with configurable warm-up and sampling, frame rate/time, variance, dropped-frame estimate, long task count, and browser-dependent heap reading. Results are approximate and include harness overhead.
 - Local IndexedDB persistence for favourites, collections, manual licence notes, themes, recent entries and benchmark records.
