@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ArrowRight, ChevronDown, Copy, ExternalLink, FolderHeart, Heart, Play, ShieldCheck, X } from 'lucide-react'
 import type { ComponentRecord, LicenceReviewRecord } from '../domain/registry'
 import { previewFiles } from '../preview/documents'
@@ -22,7 +22,29 @@ type Tab = 'overview' | 'source' | 'licence'
 export default function ComponentDetails({ item, overrides, favourites, collections, onClose, onToggleFavourite, onAddToCollection, onCopy, onPlay, onEditLicence, children }: Props) {
   const [tab, setTab] = useState<Tab>('overview')
   const [fileName, setFileName] = useState<'index.html' | 'styles.css'>('index.html')
+  const dialog = useRef<HTMLElement>(null)
+  const closeAction = useRef(onClose)
   const files = useMemo(() => item.previewAvailable ? previewFiles(item) : null, [item])
+  useEffect(() => { closeAction.current = onClose }, [onClose])
+  useEffect(() => {
+    const root = dialog.current
+    if (!root) return
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const focusables = () => Array.from(root.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+    focusables()[0]?.focus()
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.stopPropagation(); closeAction.current(); return }
+      if (event.key !== 'Tab') return
+      const elements = focusables()
+      if (!elements.length) { event.preventDefault(); root.focus(); return }
+      const first = elements[0]
+      const last = elements[elements.length - 1]
+      if (event.shiftKey && (document.activeElement === first || !root.contains(document.activeElement))) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && (document.activeElement === last || !root.contains(document.activeElement))) { event.preventDefault(); first.focus() }
+    }
+    root.addEventListener('keydown', handleKey)
+    return () => { root.removeEventListener('keydown', handleKey); previous?.focus() }
+  }, [])
   const licence: LicenceReviewRecord = overrides[item.id] ?? {
     status: item.licence.status,
     name: item.licence.name,
@@ -37,7 +59,7 @@ export default function ComponentDetails({ item, overrides, favourites, collecti
   }
 
   return <div className="modal-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
-    <section className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="component-detail-title">
+    <section ref={dialog} tabIndex={-1} className="detail-modal" role="dialog" aria-modal="true" aria-labelledby="component-detail-title">
       <div className="detail-top"><span className="section-kicker">{item.category.toUpperCase()} <i>·</i> COMPONENT</span><button className="icon-button" onClick={onClose} aria-label="Close details"><X/></button></div>
       <div className="detail-preview">{children}</div>
       <div className="detail-content">
