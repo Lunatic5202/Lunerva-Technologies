@@ -60,3 +60,7 @@ LUNEVRA Digital, LUNEVRA Interactive and LUNEVRA Labs describe internal creative
 The public studio site is a React/TypeScript + Vite application. Use the package manager and scripts in the current `package.json`; the checked-in project currently defines `dev`, `build` and `preview`. Build before publishing and verify the deployed route, mobile navigation, project links, image loading and reduced-motion behavior.
 
 Keep the portfolio factual: project cards must link to real repositories/releases, and development status, affiliations, metrics and contact information must not be invented. The separate `docs/` directory contains supporting component/experiment documentation; the former Component Observatory is not the public-facing portfolio.
+
+## License
+
+LUNEVRA Technologies is a proprietary project. No license is granted to copy, modify, distribute, or commercially reuse this repository without prior written permission from the relevant rights holder. Third-party packages and assets remain subject to their respective licenses; see the project dependencies and their upstream license terms.
