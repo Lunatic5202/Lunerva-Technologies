@@ -2,11 +2,11 @@ const databaseName = 'lunevra-observatory'
 const databaseVersion = 2
 const recordsStore = 'records'
 const maxBenchmarkRecords = 500
-import type { LicenceReviewRecord } from '../domain/registry'
+import { categories, type LicenceReviewRecord, type ReviewReference } from '../domain/registry'
 import { validateTheme, type Theme } from '../domain/themes'
 
 export type WorkspaceData = {
-  schemaVersion: 2
+  schemaVersion: 3
   favourites: string[]
   collections: string[]
   collectionItems: Record<string, string[]>
@@ -15,6 +15,7 @@ export type WorkspaceData = {
   theme: Theme
   licenceReviews: Record<string, LicenceReviewRecord>
   recentItems: string[]
+  reviewQueue: ReviewReference[]
 }
 
 export type BenchmarkRecord = {
@@ -29,7 +30,7 @@ export type BenchmarkRecord = {
 }
 
 const initialWorkspace: WorkspaceData = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   favourites: [],
   collections: ['LUNEVRA Website', 'LUNA', 'Game Websites', 'Experimental Animations', 'Commercially Approved'],
   collectionItems: {},
@@ -38,6 +39,7 @@ const initialWorkspace: WorkspaceData = {
   theme: { name: 'LUNEVRA Original', background: '#08090B', surface: '#101216', raised: '#171A1F', text: '#F2F3F4', muted: '#9299A3', accent: '#75D9E8', border: '#292D33', headingFont: 'Manrope', bodyFont: 'Inter', radius: 3, spacing: 8 },
   licenceReviews: {},
   recentItems: [],
+  reviewQueue: [],
 }
 
 let connection: Promise<IDBDatabase> | undefined
@@ -91,6 +93,11 @@ function validBenchmark(value: unknown): value is BenchmarkRecord {
   return typeof value.id === 'string' && typeof value.componentId === 'string' && typeof value.userAgent === 'string' && typeof value.startedAt === 'string' && Number.isFinite(Date.parse(value.startedAt)) && finite(value.durationMs) && finite(value.warmupMs) && finite(value.viewport.width) && finite(value.viewport.height) && finite(value.metrics.averageFps) && finite(value.metrics.averageFrameMs) && finite(value.metrics.frameVarianceMs) && finite(value.metrics.droppedFrames) && finite(value.metrics.longTasks) && (value.metrics.heapBytes === null || finite(value.metrics.heapBytes))
 }
 
+function validReviewReference(value: unknown): value is ReviewReference {
+  if (!objectRecord(value)) return false
+  return typeof value.id === 'string' && value.id.trim().length > 0 && typeof value.name === 'string' && value.name.trim().length > 0 && typeof value.sourceUrl === 'string' && /^https:\/\//i.test(value.sourceUrl) && categories.slice(1).includes(value.category as typeof categories[number]) && typeof value.notes === 'string' && typeof value.addedAt === 'string' && Number.isFinite(Date.parse(value.addedAt))
+}
+
 function parseLegacy(key: string): unknown {
   try {
     const raw = localStorage.getItem(`obs-${key}`)
@@ -114,23 +121,25 @@ function legacyWorkspace(): WorkspaceData {
     theme,
     licenceReviews: {},
     recentItems: [],
+    reviewQueue: [],
   }
 }
 
 function validWorkspace(value: unknown): value is WorkspaceData {
   if (!objectRecord(value)) return false
   const record = value as Partial<WorkspaceData>
-  if (record.schemaVersion !== 2 || !validStringArray(record.favourites) || !validStringArray(record.collections) || !validStringArray(record.recentItems)) return false
+  if (record.schemaVersion !== 3 || !validStringArray(record.favourites) || !validStringArray(record.collections) || !validStringArray(record.recentItems)) return false
   if (!validCollectionItems(record.collectionItems) || !validCollectionDetails(record.collectionDetails) || !validLicenceReviews(record.licenceReviews)) return false
   if (!Array.isArray(record.savedThemes) || !record.savedThemes.every(validateTheme) || !validateTheme(record.theme)) return false
+  if (!Array.isArray(record.reviewQueue) || !record.reviewQueue.every(validReviewReference)) return false
   return true
 }
 
 function migrateWorkspace(value: unknown): WorkspaceData | undefined {
-  if (!objectRecord(value) || value.schemaVersion !== 1) return undefined
+  if (!objectRecord(value) || ![1, 2].includes(Number(value.schemaVersion))) return undefined
   const collections = validStringArray(value.collections) ? Array.from(new Set(value.collections)) : initialWorkspace.collections
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     favourites: validStringArray(value.favourites) ? value.favourites : [],
     collections,
     collectionItems: validCollectionItems(value.collectionItems) ? value.collectionItems : {},
@@ -139,6 +148,7 @@ function migrateWorkspace(value: unknown): WorkspaceData | undefined {
     theme: validateTheme(value.theme) ? value.theme : initialWorkspace.theme,
     licenceReviews: validLicenceReviews(value.licenceReviews) ? value.licenceReviews : {},
     recentItems: validStringArray(value.recentItems) ? value.recentItems.slice(0, 40) : [],
+    reviewQueue: Array.isArray(value.reviewQueue) ? value.reviewQueue.filter(validReviewReference) : [],
   }
 }
 
@@ -189,11 +199,11 @@ export async function saveBenchmarks(records: BenchmarkRecord[]): Promise<void> 
 }
 
 export async function exportWorkspace(workspace: WorkspaceData, benchmarks: BenchmarkRecord[]) {
-  return { format: 'lunevra-observatory-backup', version: 2, exportedAt: new Date().toISOString(), workspace, benchmarks }
+  return { format: 'lunevra-observatory-backup', version: 3, exportedAt: new Date().toISOString(), workspace, benchmarks }
 }
 
 export function validateBackup(value: unknown): value is { format: string; version: number; workspace: WorkspaceData; benchmarks: BenchmarkRecord[] } {
   if (!value || typeof value !== 'object') return false
-  const backup = value as { format?: unknown; version?: unknown; workspace?: unknown; benchmarks?: unknown }
-  return backup.format === 'lunevra-observatory-backup' && backup.version === 2 && validWorkspace(backup.workspace) && Array.isArray(backup.benchmarks) && backup.benchmarks.length <= maxBenchmarkRecords && backup.benchmarks.every(validBenchmark)
+  const backup = value as { format?: unknown; version?: unknown; exportedAt?: unknown; workspace?: unknown; benchmarks?: unknown }
+  return backup.format === 'lunevra-observatory-backup' && backup.version === 3 && typeof backup.exportedAt === 'string' && Number.isFinite(Date.parse(backup.exportedAt)) && validWorkspace(backup.workspace) && Array.isArray(backup.benchmarks) && backup.benchmarks.length <= maxBenchmarkRecords && backup.benchmarks.every(validBenchmark)
 }

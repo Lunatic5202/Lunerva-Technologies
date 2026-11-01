@@ -6,6 +6,7 @@ export type PreviewKind = 'orbit' | 'type' | 'grid' | 'panel' | 'nav' | 'drift' 
 export type LicenceStatus = 'Verified' | 'Review required' | 'Restricted' | 'Unknown'
 export type PermissionStatus = 'Allowed' | 'Restricted' | 'Review required' | 'Unknown'
 export type LicenceReviewRecord = { status: LicenceStatus; name: string; version: string; commercialUse: PermissionStatus; modification: PermissionStatus; redistribution: PermissionStatus; attribution: string; verifiedAt: string; reference: string; notes: string }
+export type ReviewReference = { id: string; name: string; sourceUrl: string; category: Category; notes: string; addedAt: string }
 
 type RegistryRecord = {
   id: string

@@ -10,12 +10,13 @@ Requires Node.js and pnpm. Run `pnpm install`, then `pnpm dev` and open the loca
 
 - Dashboard with real recently viewed history and direct workflow shortcuts; searchable, filterable, sortable component catalogue with platform aware keyboard search.
 - Component detail views with working Overview, Source & Usage and Licence tabs, plus original local visual studies and clearly marked third party discovery references.
+- Persistent source review queue for HTTPS links; external code remains unimported and unexecuted until reviewed.
 - Isolated Playground with viewport presets, custom dimensions, motion preference, canvas color, fullscreen, controls and copyable HTML/CSS source.
 - Performance Lab with configurable warm-up and sampling, frame rate/time, variance, dropped-frame estimate, long task count, and browser-dependent heap reading. Results are approximate and include harness overhead.
 - Local IndexedDB persistence for favourites, collections, manual licence notes, themes, recent entries and benchmark records.
 - Theme Workshop with brand presets, token editing, saved palettes, JSON import/export and validation.
 - Collections with membership, descriptions, notes and tags.
-- Workspace backup and restore, plus responsive navigation and layouts.
+- Workspace backup and restore with schema migration and bounded measurement history, plus responsive navigation and layouts.
 
 ## Limits and provenance
 
