@@ -45,3 +45,20 @@ body{font-family:var(--body)}.preview-workspace{min-height:560px;border:1px soli
 }
 .motion-setting-label { display: grid; gap: 7px; min-width: 170px; }
 .motion-setting-label select { min-height: 34px; padding: 0 9px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 3px; }
+
+/* The Observatory's orbital hero uses motion as a quiet brand signature. */
+.hero-ring { transform-origin: center; animation: hero-orbit 88s linear infinite; }
+.hero-halo { animation: hero-breathe 11s ease-in-out infinite alternate; }
+.hero-moon { animation: hero-moon-drift 9s ease-in-out infinite alternate; }
+.hero-cross { animation: hero-signal 4.8s ease-in-out infinite; }
+.hero-visual:hover .hero-ring { box-shadow: 0 0 18px #b4bec755; }
+@keyframes hero-orbit { from { transform: rotate(18deg); } to { transform: rotate(378deg); } }
+@keyframes hero-breathe { from { opacity: .55; transform: scale(.94); } to { opacity: .95; transform: scale(1.06); } }
+@keyframes hero-moon-drift { from { translate: 0 0; } to { translate: 0 -5px; } }
+@keyframes hero-signal { 0%, 100% { opacity: .65; text-shadow: 0 0 4px #fff8; } 50% { opacity: 1; text-shadow: 0 0 13px #fff; } }
+.stats-grid .stat-card { animation: card-enter 440ms var(--motion-ease) both; }
+.stats-grid .stat-card:nth-child(2) { animation-delay: 45ms; }
+.stats-grid .stat-card:nth-child(3) { animation-delay: 90ms; }
+.stats-grid .stat-card:nth-child(4) { animation-delay: 135ms; }
+.dashboard-lower > section { animation: card-enter 500ms var(--motion-ease) 120ms both; }
+.dashboard-lower > section:nth-child(2) { animation-delay: 190ms; }
