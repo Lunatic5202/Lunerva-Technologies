@@ -1,6 +1,6 @@
 # LUNEVRA Component Observatory
 
-**Discover. Experiment. Evaluate. Integrate.** A local first frontend component and animation laboratory for LUNEVRA Technologies, styled from the supplied identity board with obsidian, graphite, silver and lunar white.
+**Discover. Experiment. Evaluate. Integrate.** A local first frontend component and animation laboratory for LUNEVRA Technologies, styled from the supplied identity board with obsidian, graphite, silver and lunar white, using Space Grotesk, Inter and IBM Plex Mono as its typography system.
 
 ## Start locally
 

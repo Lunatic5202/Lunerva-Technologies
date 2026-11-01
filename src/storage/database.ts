@@ -36,7 +36,7 @@ const initialWorkspace: WorkspaceData = {
   collectionItems: {},
   collectionDetails: {},
   savedThemes: [],
-  theme: { name: 'LUNEVRA Original', background: '#08090B', surface: '#101216', raised: '#171A1F', text: '#F2F3F4', muted: '#9299A3', accent: '#75D9E8', border: '#292D33', headingFont: 'Manrope', bodyFont: 'Inter', radius: 3, spacing: 8 },
+  theme: { name: 'LUNEVRA Original', background: '#08090B', surface: '#101216', raised: '#171A1F', text: '#F2F3F4', muted: '#9299A3', accent: '#75D9E8', border: '#292D33', headingFont: 'Space Grotesk', bodyFont: 'Inter', radius: 3, spacing: 8 },
   licenceReviews: {},
   recentItems: [],
   reviewQueue: [],

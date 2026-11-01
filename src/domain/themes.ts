@@ -13,7 +13,7 @@ export type Theme = {
   spacing:number
 }
 
-export const original:Theme={name:'LUNEVRA Original',background:'#08090B',surface:'#101216',raised:'#171A1F',text:'#F2F3F4',muted:'#9299A3',accent:'#75D9E8',border:'#292D33',headingFont:'Manrope',bodyFont:'Inter',radius:3,spacing:8}
+export const original:Theme={name:'LUNEVRA Original',background:'#08090B',surface:'#101216',raised:'#171A1F',text:'#F2F3F4',muted:'#9299A3',accent:'#75D9E8',border:'#292D33',headingFont:'Space Grotesk',bodyFont:'Inter',radius:3,spacing:8}
 export const monochrome:Theme={...original,name:'LUNEVRA Monochrome',accent:'#F1F2F3'}
 export const experimental:Theme={...original,name:'LUNEVRA Experimental',accent:'#9BB8C5'}
 
