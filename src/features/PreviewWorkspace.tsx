@@ -45,7 +45,7 @@ export default function PreviewWorkspace({ mode, initialComponentId, records, on
     const averageFrameMs=samples.length?samples.reduce((sum,value)=>sum+value,0)/samples.length:0
     const variance=samples.length?samples.reduce((sum,value)=>sum+(value-averageFrameMs)**2,0)/samples.length:0
     const memory=(performance as Performance&{memory?:{usedJSHeapSize:number}}).memory?.usedJSHeapSize??null
-    const record:BenchmarkRecord={id:crypto.randomUUID(),componentId:item.id,startedAt:new Date().toISOString(),durationMs:Math.round(elapsed),warmupMs:warmup,viewport:{width,height},userAgent:navigator.userAgent,metrics:{averageFps:elapsed?samples.length/(elapsed/1000):0,averageFrameMs,frameVarianceMs:Math.sqrt(variance),droppedFrames:samples.filter(value=>value>1000/60*1.5).length,longTasks:longTasks.length,heapBytes:memory}}
+    const record:BenchmarkRecord={id:crypto.randomUUID(),componentId:item.id,startedAt:new Date().toISOString(),durationMs:Math.round(elapsed),warmupMs:warmup,viewport:{width,height},userAgent:navigator.userAgent,metrics:{averageFps:elapsed?samples.length/(elapsed/1000):0,averageFrameMs,frameVarianceMs:Math.sqrt(variance),droppedFrames:samples.reduce((count,value)=>count+Math.max(0,Math.round(value/(1000/60))-1),0),longTasks:longTasks.length,heapBytes:memory}}
     onRecord(record);setProgress(100);setRunning(false)
     window.setTimeout(()=>setProgress(0),1600)
   }

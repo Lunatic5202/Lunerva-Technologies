@@ -202,8 +202,11 @@ export async function exportWorkspace(workspace: WorkspaceData, benchmarks: Benc
   return { format: 'lunevra-observatory-backup', version: 3, exportedAt: new Date().toISOString(), workspace, benchmarks }
 }
 
-export function validateBackup(value: unknown): value is { format: string; version: number; workspace: WorkspaceData; benchmarks: BenchmarkRecord[] } {
-  if (!value || typeof value !== 'object') return false
+export function parseBackup(value: unknown): { workspace: WorkspaceData; benchmarks: BenchmarkRecord[] } | undefined {
+  if (!value || typeof value !== 'object') return undefined
   const backup = value as { format?: unknown; version?: unknown; exportedAt?: unknown; workspace?: unknown; benchmarks?: unknown }
-  return backup.format === 'lunevra-observatory-backup' && backup.version === 3 && typeof backup.exportedAt === 'string' && Number.isFinite(Date.parse(backup.exportedAt)) && validWorkspace(backup.workspace) && Array.isArray(backup.benchmarks) && backup.benchmarks.length <= maxBenchmarkRecords && backup.benchmarks.every(validBenchmark)
+  if (backup.format !== 'lunevra-observatory-backup' || ![2, 3].includes(Number(backup.version)) || typeof backup.exportedAt !== 'string' || !Number.isFinite(Date.parse(backup.exportedAt))) return undefined
+  const workspace = backup.version === 3 && validWorkspace(backup.workspace) ? backup.workspace : backup.version === 2 ? migrateWorkspace(backup.workspace) : undefined
+  if (!workspace || !Array.isArray(backup.benchmarks) || backup.benchmarks.length > maxBenchmarkRecords || !backup.benchmarks.every(validBenchmark)) return undefined
+  return { workspace, benchmarks: backup.benchmarks }
 }
