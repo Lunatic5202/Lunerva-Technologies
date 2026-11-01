@@ -73,6 +73,7 @@ export default function ComponentDetails({ item, overrides, favourites, collecti
           <div className="detail-meta"><span>FRAMEWORK<b>{item.framework}</b></span><span>AUTHOR<b>{item.author}</b></span><span>DEPENDENCIES<b>{item.dependencies.length ? item.dependencies.join(', ') : 'None'}</b></span><span>PREVIEW<b>{item.previewAvailable ? 'Local preview available' : 'Not available'}</b></span></div>
           <div className={`review-notice ${item.previewAvailable ? 'neutral-notice' : ''}`}><ShieldCheck/><span><b>{item.previewAvailable ? 'Original Observatory demonstration' : 'External discovery reference'}</b><small>{item.previewAvailable ? 'A visual study with copyable HTML and CSS. Review the source and confirm reuse terms before shipping.' : 'The exact component has not been selected or reviewed. Its code is not imported or executed.'}</small></span></div>
           <p className="detail-notes">{item.notes}</p>
+          {item.inspiration && <div className="inspiration-note"><span className="section-kicker">DESIGN REFERENCE</span><b>{item.inspiration.name} · {item.inspiration.licence}</b><small>{item.inspiration.notes}</small><a href={item.inspiration.url} target="_blank" rel="noreferrer">View upstream component ↗</a></div>}
         </div>}
 
         {tab === 'source' && <div className="detail-tab-panel" role="tabpanel">
@@ -90,7 +91,7 @@ export default function ComponentDetails({ item, overrides, favourites, collecti
           <button className="text-link detail-licence-link" onClick={onEditLicence}>Open Licence Manager <ArrowRight/></button>
         </div>}
 
-        <div className="detail-actions"><label className="collection-select-label"><FolderHeart/><select value="" aria-label="Add component to collection" onChange={event => { if (event.target.value) onAddToCollection(event.target.value, item.id) }}><option value="">Add to collection…</option>{collections.map(name => <option key={name} value={name}>{name}</option>)}</select><ChevronDown/></label><button className="button button-secondary" onClick={() => onCopy(`${item.name}\n${item.description}\nFramework: ${item.framework}\nLicence: ${licence.name} · ${licence.status}\nSource: ${item.sourceUrl || 'Original local Observatory demonstration'}`)}><Copy/>Copy metadata</button><button className="button button-primary" onClick={() => onPlay(item)}><Play/>Open in playground</button></div>
+        <div className="detail-actions"><label className="collection-select-label"><FolderHeart/><select value="" aria-label="Add component to collection" onChange={event => { if (event.target.value) onAddToCollection(event.target.value, item.id) }}><option value="">Add to collection…</option>{collections.map(name => <option key={name} value={name}>{name}</option>)}</select><ChevronDown/></label><button className="button button-secondary" onClick={() => onCopy(`${item.name}\n${item.description}\nFramework: ${item.framework}\nLicence: ${licence.name} · ${licence.status}\nSource: ${item.sourceUrl || 'Original local Observatory demonstration'}\nDesign reference: ${item.inspiration ? item.inspiration.name+' — '+item.inspiration.url : 'None recorded'}`)}><Copy/>Copy metadata</button><button className="button button-primary" onClick={() => onPlay(item)}><Play/>Open in playground</button></div>
       </div>
     </section>
   </div>

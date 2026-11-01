@@ -9,7 +9,7 @@ Requires Node.js and pnpm. Run `pnpm install`, then `pnpm dev` and open the loca
 ## Included in this first implementation
 
 - Dashboard with real recently viewed history and direct workflow shortcuts; searchable, filterable, sortable component catalogue with platform aware keyboard search.
-- Component detail views with working Overview, Source & Usage and Licence tabs, plus original local visual studies and clearly marked third party discovery references.
+- Component detail views with working Overview, Source & Usage and Licence tabs, plus original local visual studies and attributed Magic UI inspired meteor and orbit hero studies.
 - Persistent source review queue for HTTPS links; external code remains unimported and unexecuted until reviewed.
 - Isolated Playground with viewport presets, custom dimensions, motion preference, canvas color, fullscreen, controls and copyable HTML/CSS source.
 - Performance Lab with configurable warm-up and sampling, frame rate/time, variance, dropped-frame estimate, long task count, and browser-dependent heap reading. Results are approximate and include harness overhead.
@@ -20,6 +20,6 @@ Requires Node.js and pnpm. Run `pnpm install`, then `pnpm dev` and open the loca
 
 ## Limits and provenance
 
-The original demonstrations are visual studies. The repository has no distribution licence, so their reuse terms remain Unknown. Third party records are discovery links only; their code is not bundled or executed and no exact external component has been reviewed. Licence fields are a manual record, not a legal verification service. Performance values describe the current browser session and do not represent controlled benchmarks. WebGL and framework-specific executable previews, automated licence verification, and source syntax highlighting are not included in this first slice.
+The original demonstrations are visual studies. The repository has no distribution licence, so their reuse terms remain Unknown. React Bits remains a broad discovery reference. Magic UI Meteors and Orbiting Circles are recorded as design inspirations for independent HTML/CSS adaptations; no upstream code is bundled or executed. Licence fields are a manual record, not a legal verification service. Performance values describe the current browser session and do not represent controlled benchmarks. WebGL and framework-specific executable previews, automated licence verification, and source syntax highlighting are not included in this first slice.
 
 See [`ARCHITECTURE.md`](ARCHITECTURE.md), [`COMPONENT_REGISTRY.md`](COMPONENT_REGISTRY.md), and [`LICENSING.md`](LICENSING.md) for implementation and contribution guidance.
