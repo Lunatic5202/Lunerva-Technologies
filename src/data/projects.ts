@@ -11,6 +11,9 @@ export type Project = {
   kind: 'luna' | 'tale' | 'water'
   discipline: Discipline
   image: string
+  srcSet?: string
+  width: number
+  height: number
   imageAlt: string
   sourceLabel: string
   links: ProjectLink[]
@@ -28,7 +31,9 @@ export const projects: Project[] = [
       'An offline-first Android music player with a live visualizer and color-shifting interface that responds to the music.',
     kind: 'luna',
     discipline: 'Flagship Projects',
-    image: 'https://raw.githubusercontent.com/Lunatic5202/Luna/main/docs/screenshots/player.jpg',
+    image: '/work/luna-540.webp',
+    width: 540,
+    height: 1201,
     imageAlt: 'LUNA Android now-playing screen with its live visualizer',
     sourceLabel: 'NOW PLAYING / ANDROID',
     links: [
@@ -47,7 +52,10 @@ export const projects: Project[] = [
       'A 30-day otome visual novel where Scaramouche and the Wanderer exist at the same time, and a magical Folio records what happens.',
     kind: 'tale',
     discipline: 'Flagship Projects',
-    image: 'https://raw.githubusercontent.com/Lunatic5202/Twice-told-tale/main/game/images/ui/title.png',
+    image: '/work/tale-1200.webp',
+    srcSet: '/work/tale-640.webp 640w, /work/tale-1200.webp 1200w',
+    width: 1200,
+    height: 674,
     imageAlt: 'Official Twice-Told Tale title artwork from the game repository',
     sourceLabel: 'OFFICIAL TITLE ART',
     links: [
@@ -66,8 +74,9 @@ export const projects: Project[] = [
       'A gentle-on-the-surface 2D Souls-like platformer. Follow Lumi, a lantern-bearing wanderer, through lands shaped by the seven sins.',
     kind: 'water',
     discipline: 'Flagship Projects',
-    image:
-      'https://raw.githubusercontent.com/Lunatic5202/what-the-water-keeps/main/assets/portraits/lumi/lumi_neutral.png',
+    image: '/work/water-427.webp',
+    width: 427,
+    height: 513,
     imageAlt: 'Lumi, the lantern-bearing wanderer, in the game’s original character art',
     sourceLabel: 'CHARACTER STUDY / LUMI',
     links: [{ label: 'Follow development', href: 'https://github.com/Lunatic5202/what-the-water-keeps' }],

@@ -81,7 +81,7 @@ export function ProjectImage({ project, onOpen, parallax, entrance }: Props) {
     <motion.button
       className="project-image-button"
       onClick={() => onOpen(project)}
-      aria-label={'View ' + project.name + ' details'}
+      aria-label={project.status + '. View details: ' + project.name}
       initial={entrance && !reduce ? { clipPath: 'inset(0 0 100% 0)' } : undefined}
       whileInView={entrance ? { clipPath: 'inset(0 0 0% 0)' } : undefined}
       viewport={{ once: true, margin: '0px 0px -12% 0px' }}
