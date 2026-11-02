@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Reveal } from './Reveal'
 import { SectionLabel } from './ScrambleText'
 import { ease } from '../lib/motion'
+import { useMediaQuery } from '../lib/useMediaQuery'
 
 const principles = [
   ['Purposeful technology.', 'Make tools and experiences for a reason. Let usefulness and feeling sit side by side.'],
@@ -10,21 +11,10 @@ const principles = [
   ['Creative freedom.', 'Independence makes space to explore ideas on their own terms.'],
 ]
 
-function useWide() {
-  const [wide, setWide] = useState(() => window.matchMedia('(min-width: 721px)').matches)
-  useEffect(() => {
-    const query = window.matchMedia('(min-width: 721px)')
-    const onChange = () => setWide(query.matches)
-    query.addEventListener('change', onChange)
-    return () => query.removeEventListener('change', onChange)
-  }, [])
-  return wide
-}
-
 /** Sticky-scroll layout: the title and counter stay put while each principle takes focus in turn. */
 export function Principles() {
   const [active, setActive] = useState(0)
-  const wide = useWide()
+  const wide = useMediaQuery('(min-width: 721px)')
 
   return (
     <section className="principles section-wrap" id="about">

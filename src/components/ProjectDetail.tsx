@@ -43,7 +43,7 @@ export function ProjectDetail({ project, open, onClose, restoreFocus }: Props) {
                   <Dialog.Close className="detail-close" aria-label="Close project details">
                     <X size={18} />
                   </Dialog.Close>
-                  <Artwork project={project} />
+                  <Artwork project={project} reveal />
                   <div className="detail-copy">
                     <span className="eyebrow">
                       PROJECT {project.number} / {project.category}

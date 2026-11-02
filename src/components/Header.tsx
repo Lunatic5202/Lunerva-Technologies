@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 'motion/react'
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring } from 'motion/react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { nav } from '../data/projects'
 import { ease } from '../lib/motion'
@@ -19,8 +19,15 @@ const item = { hidden: { opacity: 0, y: -6 }, show: { opacity: 1, y: 0, transiti
 export function Header({ active }: { active: string }) {
   const [open, setOpen] = useState(false)
   const reduce = useReducedMotion()
-  const { scrollYProgress } = useScroll()
+  const { scrollY, scrollYProgress } = useScroll()
+  const [hidden, setHidden] = useState(false)
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 })
+
+  // Floating navbar: tuck away while reading downward, return the moment you scroll up.
+  useMotionValueEvent(scrollY, 'change', latest => {
+    const previous = scrollY.getPrevious() ?? 0
+    setHidden(!open && latest > previous && latest > 160)
+  })
 
   useEffect(() => {
     if (!open) return
@@ -30,7 +37,12 @@ export function Header({ active }: { active: string }) {
   }, [open])
 
   return (
-    <header className="site-header">
+    <motion.header
+      className="site-header"
+      animate={{ y: hidden && !reduce ? '-100%' : '0%' }}
+      transition={{ duration: 0.4, ease }}
+      onFocusCapture={() => setHidden(false)}
+    >
       <a className="wordmark" href="#home" aria-label="LUNEVRA Technologies home">
         <Mark />
         <span>
@@ -81,6 +93,6 @@ export function Header({ active }: { active: string }) {
         )}
       </AnimatePresence>
       {!reduce && <motion.span className="scroll-progress" style={{ scaleX: progress }} aria-hidden="true" />}
-    </header>
+    </motion.header>
   )
 }
