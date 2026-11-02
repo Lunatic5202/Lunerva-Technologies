@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
 import { countFor, filters, nav, projects, type Filter, type Project } from './data/projects'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { Header, Mark } from './components/Header'
 import { Hero } from './components/Hero'
 import { MagneticLink } from './components/MagneticLink'
@@ -18,7 +19,8 @@ import { StatusMarquee } from './components/StatusMarquee'
 import { dispatches } from './data/journal'
 import { experiments } from './data/labs'
 
-const ProjectDetail = lazy(() => import('./components/ProjectDetail').then(m => ({ default: m.ProjectDetail })))
+const loadDetail = () => import('./components/ProjectDetail')
+const ProjectDetail = lazy(() => loadDetail().then(m => ({ default: m.ProjectDetail })))
 
 const PROJECT_HASH = /^#project\/([\w-]+)$/
 const projectFromHash = () => {
@@ -115,7 +117,7 @@ export default function App() {
             </span>
           </section>
 
-          <section className="work-section section-wrap" id="work">
+          <section className="work-section section-wrap" id="work" onPointerEnter={() => void loadDetail()} onFocus={() => void loadDetail()}>
             <Reveal className="section-top">
               <div>
                 <SectionLabel text="02 / SELECTED WORK" />
@@ -309,7 +311,7 @@ export default function App() {
           <a className="wordmark footer-wordmark" href="#home">
             <Mark />
             <span>
-              LUNEVRA<small>TECHNOLOGIES</small>
+              LUNEVRA{' '}<small>TECHNOLOGIES</small>
             </span>
           </a>
           <span>INDEPENDENT BY DESIGN. BUILT TO CREATE.</span>
@@ -320,9 +322,18 @@ export default function App() {
         </footer>
       </div>
       {lastSelected.current && (
+        <ErrorBoundary
+          fallback={
+            <div className="load-error" role="alert">
+              Project details couldn’t load.
+              <button onClick={() => window.location.reload()}>Reload</button>
+            </div>
+          }
+        >
         <Suspense fallback={null}>
           <ProjectDetail project={lastSelected.current} open={Boolean(selected)} onClose={close} restoreFocus={restoreFocus} />
         </Suspense>
+        </ErrorBoundary>
       )}
     </>
   )

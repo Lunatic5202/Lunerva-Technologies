@@ -36,6 +36,10 @@ export function Artwork({ project, parallax, reveal }: Props) {
           <img
             ref={attach}
             src={project.image}
+            srcSet={project.srcSet}
+            sizes="(max-width: 1050px) 100vw, 580px"
+            width={project.width}
+            height={project.height}
             alt={project.imageAlt}
             loading="lazy"
             decoding="async"
@@ -43,7 +47,7 @@ export function Artwork({ project, parallax, reveal }: Props) {
             onError={() => setState('error')}
           />
         )}
-        {reveal && state === 'ready' && <img className="art-reveal" src={project.image} alt="" aria-hidden="true" />}
+        {reveal && state === 'ready' && <img className="art-reveal" src={project.image} srcSet={project.srcSet} sizes="(max-width: 1050px) 100vw, 580px" alt="" aria-hidden="true" />}
       </motion.div>
       {state === 'error' && (
         <div className="art-fallback" role="img" aria-label={project.imageAlt}>
@@ -51,8 +55,8 @@ export function Artwork({ project, parallax, reveal }: Props) {
           <b>{project.name}</b>
         </div>
       )}
-      <span className="art-source">{project.sourceLabel}</span>
-      <span className="art-index">{project.number} / LUNEVRA</span>
+      <span className="art-source" aria-hidden="true">{project.sourceLabel}</span>
+      <span className="art-index" aria-hidden="true">{project.number} / LUNEVRA</span>
     </div>
   )
 }

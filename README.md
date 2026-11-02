@@ -44,6 +44,16 @@ The brief references Aceternity UI, React Bits and Magic UI. Their interaction p
 
 Not built yet from the brief: Liquid Glass navigation surface (skipped on purpose to keep glass minimal), Images Slider (no gallery assets yet), per-project case-study pages, and the Products & Utilities entries beyond the filter category.
 
+## Performance, SEO and accessibility
+
+- Fonts (Manrope, DM Sans, DM Mono) are self-hosted via `@fontsource`; there are no third-party requests.
+- Project art is served as local WebP with `srcSet`, explicit dimensions and a loading/error state.
+- Set `VITE_SITE_URL` (for example `https://example.com`) at build time to emit the canonical, `og:url`, `og:image` and `twitter:image` tags. They are left out when it is unset rather than guessed. `public/og.png` is the share card; `robots.txt` allows all.
+- JSON-LD describes the organisation only (name, slogan, description, GitHub). Nothing is invented.
+- An `ErrorBoundary` wraps the app and the lazy project dialog, which is also prefetched on hover or focus of the Work section.
+- Small type was enlarged and the manifesto's unlit text now tweens colour, so resting text meets contrast. Mobile layouts were rechecked at 390px.
+- Lighthouse (local preview, simulated throttling), before then after: mobile 93/96/93/92 then 91/100/100/100 (performance/accessibility/best practices/SEO); desktop 100/96/96/92 then 100/96/100/100. Mobile LCP (about 3.3s, the hero tagline) is bound by render-blocking CSS under throttling. The remaining desktop contrast flags come from panels caught mid-crossfade.
+
 ## Development
 
 Requires Node.js and pnpm.

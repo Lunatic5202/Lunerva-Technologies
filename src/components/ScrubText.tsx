@@ -2,6 +2,11 @@ import { useLayoutEffect, useRef } from 'react'
 
 type Part = { text: string; em?: boolean }
 
+const BASE = '#747c80' // unlit: 4.6:1 on the page background
+const LIT = '#dfe2e3'
+const LIT_EM = '#a9cbd3'
+const target = (el: Element) => (el.classList.contains('em-word') ? LIT_EM : LIT)
+
 /** Words light up one by one as the paragraph scrolls through the viewport (GSAP ScrollTrigger, loaded on demand). */
 export function ScrubText({ parts }: { parts: Part[] }) {
   const ref = useRef<HTMLParagraphElement>(null)
@@ -10,7 +15,7 @@ export function ScrubText({ parts }: { parts: Part[] }) {
     const el = ref.current
     if (!el) return
     const words = el.querySelectorAll<HTMLElement>('.scrub-word')
-    const showAll = () => words.forEach(word => (word.style.opacity = '1'))
+    const showAll = () => words.forEach(word => (word.style.color = target(word)))
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       showAll()
       return
@@ -24,9 +29,9 @@ export function ScrubText({ parts }: { parts: Part[] }) {
         const ctx = gsap.context(() => {
           gsap.fromTo(
             words,
-            { opacity: 0.14 },
+            { color: BASE },
             {
-              opacity: 1,
+              color: (_index: number, el: Element) => target(el),
               ease: 'none',
               stagger: 0.12,
               scrollTrigger: { trigger: el, start: 'top 82%', end: 'bottom 48%', scrub: 0.6 },

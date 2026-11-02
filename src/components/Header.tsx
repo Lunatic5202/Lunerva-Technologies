@@ -46,7 +46,7 @@ export function Header({ active }: { active: string }) {
       <a className="wordmark" href="#home" aria-label="LUNEVRA Technologies home">
         <Mark />
         <span>
-          LUNEVRA<small>TECHNOLOGIES</small>
+          LUNEVRA{' '}<small>TECHNOLOGIES</small>
         </span>
       </a>
       <nav className="desktop-nav" aria-label="Main navigation">

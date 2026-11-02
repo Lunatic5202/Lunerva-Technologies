@@ -75,16 +75,16 @@ export function Hero() {
             <span className="sr-only">LUNEVRA Technologies</span>
             <SplitChars text="LUNEVRA" delay={0.25} step={0.06} />
             <span className="sub" aria-hidden="true">
-              <SplitChars text="TECHNOLOGIES" delay={0.85} step={0.035} />
+              <SplitChars text="TECHNOLOGIES" delay={0.7} step={0.035} />
             </span>
           </h1>
           <p className="hero-tagline">
             <GenerateText
-              delay={1.15}
+              delay={0.4}
               lines={[{ text: 'Independent by design.' }, { text: 'Built to create.', em: true }]}
             />
           </p>
-          <motion.div {...rise(1.9, reduce)}>
+          <motion.div {...rise(1.0, reduce)}>
             <MagneticLink className="hero-cta" href="#work">
               Explore selected work <ArrowDown size={15} />
             </MagneticLink>
