@@ -6,6 +6,10 @@ import { Header, Mark } from './components/Header'
 import { Hero } from './components/Hero'
 import { MagneticLink } from './components/MagneticLink'
 import { ProjectRow } from './components/ProjectRow'
+import { Showcase } from './components/Showcase'
+import { BackgroundLines } from './components/BackgroundLines'
+import { TextHover } from './components/TextHover'
+import { useMediaQuery } from './lib/useMediaQuery'
 import { Principles } from './components/Principles'
 import { Reveal } from './components/Reveal'
 import { SectionLabel } from './components/ScrambleText'
@@ -39,6 +43,7 @@ export default function App() {
   const lastSelected = useRef<Project | null>(null)
   if (selected) lastSelected.current = selected
 
+  const wideLayout = useMediaQuery('(min-width: 1051px)')
   const visible = projects.filter(p => filter === 'All work' || p.discipline === filter)
 
   const opener = useRef<HTMLElement | null>(null)
@@ -143,9 +148,11 @@ export default function App() {
               <AnimatePresence mode="wait" initial={false}>
                 {visible.length ? (
                   <div key={filter} className="project-group">
-                    {visible.map(project => (
-                      <ProjectRow key={project.slug} project={project} onOpen={open} />
-                    ))}
+                    {wideLayout ? (
+                      <Showcase projects={visible} onOpen={open} />
+                    ) : (
+                      visible.map(project => <ProjectRow key={project.slug} project={project} onOpen={open} />)
+                    )}
                   </div>
                 ) : (
                   <Reveal key="empty" className="empty-work">
@@ -162,6 +169,7 @@ export default function App() {
           </section>
 
           <section className="labs-section" id="labs">
+            <BackgroundLines />
             <div className="section-wrap labs-inner">
               <Reveal className="labs-heading">
                 <div>
@@ -294,6 +302,9 @@ export default function App() {
             </div>
           </section>
         </main>
+        <div className="footer-display" aria-hidden="true">
+          <TextHover text="LUNEVRA" />
+        </div>
         <footer className="site-footer">
           <a className="wordmark footer-wordmark" href="#home">
             <Mark />
