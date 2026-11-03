@@ -9,6 +9,8 @@ type Props = { project: Project | null; open: boolean; onClose: () => void; rest
 
 /** Accessible modal (Radix Dialog handles focus trap, Escape, scroll lock and focus return). */
 export function ProjectDetail({ project, open, onClose, restoreFocus }: Props) {
+  const ratio = project?.width && project.height ? project.width / project.height : 1.4
+  const wide = ratio > 1.3 // landscape screenshots get the full dialog width so they stay whole and legible
   return (
     <Dialog.Root open={open} onOpenChange={next => !next && onClose()}>
       <AnimatePresence>
@@ -34,7 +36,8 @@ export function ProjectDetail({ project, open, onClose, restoreFocus }: Props) {
                 }}
               >
                 <motion.article
-                  className="project-detail"
+                  className={'project-detail' + (wide ? ' is-wide' : '')}
+                  style={{ ['--ar' as string]: ratio }}
                   initial={{ opacity: 0, y: 18, scale: 0.985 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.99 }}
@@ -43,7 +46,7 @@ export function ProjectDetail({ project, open, onClose, restoreFocus }: Props) {
                   <Dialog.Close className="detail-close" aria-label="Close project details">
                     <X size={18} />
                   </Dialog.Close>
-                  <Artwork project={project} reveal />
+                  <Artwork project={project} reveal={project.kind === 'tale' || project.kind === 'water'} />
                   <div className="detail-copy">
                     <span className="eyebrow">
                       PROJECT {project.number} / {project.category}
@@ -62,9 +65,22 @@ export function ProjectDetail({ project, open, onClose, restoreFocus }: Props) {
                         STUDIO <b>LUNEVRA {project.division}</b>
                       </span>
                       <span>
-                        ARTWORK <b>From the project repository</b>
+                        PLATFORM <b>{project.platform}</b>
+                      </span>
+                      <span>
+                        ARTWORK <b>{project.artworkNote}</b>
                       </span>
                     </div>
+                    <div className="detail-stack" aria-label="Stack">
+                      {project.stack.map(item => (
+                        <span key={item}>{item}</span>
+                      ))}
+                    </div>
+                    <ul className="detail-highlights">
+                      {project.highlights.map(item => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
                     <div className="detail-links">
                       {project.links.map(link => (
                         <a className="text-link" href={link.href} target="_blank" rel="noreferrer" key={link.href}>
@@ -73,9 +89,7 @@ export function ProjectDetail({ project, open, onClose, restoreFocus }: Props) {
                         </a>
                       ))}
                     </div>
-                    {project.slug === 'twice-told-tale' && (
-                      <p className="project-note">A non-commercial fan work; not affiliated with HoYoverse.</p>
-                    )}
+                    {project.note && <p className="project-note">{project.note}</p>}
                     <Dialog.Close className="text-link detail-back">
                       <ArrowLeft size={15} /> Back to selected work
                     </Dialog.Close>

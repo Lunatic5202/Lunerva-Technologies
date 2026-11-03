@@ -36,6 +36,9 @@ type Props = {
   entrance?: boolean
 }
 
+/** Frame ratio follows the real image (clamped so tall phone shots and wide dashboards both stay a sensible size). */
+const aspect = (p: Project) => (p.width && p.height ? Math.min(1.8, Math.max(0.85, p.width / p.height)) : 2.4)
+
 /**
  * Project artwork as a button. On hover it tilts slightly toward the pointer and a details
  * panel slides in from whichever edge the pointer entered (and leaves through the exit edge).
@@ -86,7 +89,10 @@ export function ProjectImage({ project, onOpen, parallax, entrance }: Props) {
       whileInView={entrance ? { clipPath: 'inset(0 0 0% 0)' } : undefined}
       viewport={{ once: true, margin: '0px 0px -12% 0px' }}
       transition={{ duration: 1.1, ease, delay: 0.1 }}
-      style={reduce ? undefined : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 1100 }}
+      style={{
+        ['--ar' as string]: aspect(project),
+        ...(reduce ? null : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 1100 }),
+      }}
       onPointerEnter={enter}
       onPointerMove={move}
       onPointerLeave={leave}

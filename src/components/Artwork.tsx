@@ -11,7 +11,8 @@ type Props = {
 
 /** Project artwork with a loading state and a graceful fallback if the remote image fails. */
 export function Artwork({ project, parallax, reveal }: Props) {
-  const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
+  const hasImage = Boolean(project.image)
+  const [state, setState] = useState<'loading' | 'ready' | 'error'>(hasImage ? 'loading' : 'error')
   // Cached images can finish before React attaches onLoad.
   const attach = (img: HTMLImageElement | null) => {
     if (img?.complete) setState(img.naturalWidth > 0 ? 'ready' : 'error')
@@ -20,9 +21,8 @@ export function Artwork({ project, parallax, reveal }: Props) {
   const follow = (event: PointerEvent<HTMLDivElement>) => {
     if (!reveal || event.pointerType !== 'mouse') return
     const box = event.currentTarget.getBoundingClientRect()
-    // The parallax wrapper is 12% taller than the frame (6% overhang above), so shift into image space.
     event.currentTarget.style.setProperty('--rx', event.clientX - box.left + 'px')
-    event.currentTarget.style.setProperty('--ry', event.clientY - box.top + box.height * 0.06 + 'px')
+    event.currentTarget.style.setProperty('--ry', event.clientY - box.top + 'px')
   }
 
   return (
@@ -32,7 +32,7 @@ export function Artwork({ project, parallax, reveal }: Props) {
       onPointerMove={follow}
     >
       <motion.div className="art-parallax" style={{ y: parallax }}>
-        {state !== 'error' && (
+        {hasImage && state !== 'error' && (
           <img
             ref={attach}
             src={project.image}
@@ -50,8 +50,8 @@ export function Artwork({ project, parallax, reveal }: Props) {
         {reveal && state === 'ready' && <img className="art-reveal" src={project.image} srcSet={project.srcSet} sizes="(max-width: 1050px) 100vw, 580px" alt="" aria-hidden="true" />}
       </motion.div>
       {state === 'error' && (
-        <div className="art-fallback" role="img" aria-label={project.imageAlt}>
-          <span>ARTWORK UNAVAILABLE</span>
+        <div className="art-fallback" role="img" aria-label={hasImage ? project.imageAlt : project.name + ': no screenshot published yet'}>
+          <span>{hasImage ? 'ARTWORK UNAVAILABLE' : 'NO SCREENSHOT YET'}</span>
           <b>{project.name}</b>
         </div>
       )}
