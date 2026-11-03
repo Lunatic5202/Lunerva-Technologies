@@ -5,6 +5,7 @@ import { GenerateText } from './GenerateText'
 import { MagneticLink } from './MagneticLink'
 import { SplitChars } from './SplitChars'
 import { ease } from '../lib/motion'
+import { projects } from '../data/projects'
 
 const rise = (delay: number, reduce: boolean | null) => ({
   initial: reduce ? false : { opacity: 0, y: 24 },
@@ -64,7 +65,7 @@ export function Hero() {
       <div className="hero-spotlight" aria-hidden="true" />
       <div className="hero-meta">
         <span>INDEPENDENT TECHNOLOGY STUDIO</span>
-        <span>SELECTED WORK&nbsp; / &nbsp;01—03</span>
+        <span>SELECTED WORK&nbsp; / &nbsp;{String(projects.length).padStart(2, '0')} PROJECTS</span>
       </div>
       <div className="hero-stage">
         <motion.div className="hero-copy" style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}>

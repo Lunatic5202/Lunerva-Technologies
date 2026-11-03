@@ -115,6 +115,11 @@ export default function App() {
             <span className="manifesto-mark">
               <Mark />
             </span>
+            <div className="manifesto-proof" aria-label="Studio at a glance">
+              <span><b>{String(projects.length).padStart(2, '0')}</b> projects in the archive</span>
+              <span><b>03</b> creative directions</span>
+              <span><b>01</b> independent point of view</span>
+            </div>
           </section>
 
           <section className="work-section section-wrap" id="work" onPointerEnter={() => void loadDetail()} onFocus={() => void loadDetail()}>
@@ -295,7 +300,7 @@ export default function App() {
               <br />
               your <em>mind?</em>
             </Reveal>
-            <p>For now, find LUNEVRA on GitHub.</p>
+            <p>Open-source work, experiments and repositories live on GitHub.</p>
             <MagneticLink className="contact-link" href="https://github.com/Lunatic5202" external>
               Visit GitHub <ArrowUpRight size={17} />
             </MagneticLink>
