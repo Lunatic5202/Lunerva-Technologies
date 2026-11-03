@@ -42,7 +42,16 @@ Layout adapts: screens at least 1051px wide get the sticky showcase; tablet and 
 
 The brief references Aceternity UI, React Bits and Magic UI. Their interaction patterns informed the work above (floating navbar, text generate, sticky scroll reveal, tracing beam, direction-aware hover, SVG mask, background lines, noise, text hover, magnetic button, marquee), but each is an original implementation in the LUNEVRA design system rather than pasted source. Aceternity's licence forbids redistributing its source files and React Bits adds a Commons Clause, so nothing from those libraries is copied in. Installed packages: Motion, GSAP (free under its standard licence), Radix UI Dialog and Lucide.
 
-Not built yet from the brief: Liquid Glass navigation surface (skipped on purpose to keep glass minimal), Images Slider (no gallery assets yet), per-project case-study pages, and the Products & Utilities entries beyond the filter category.
+Not built yet from the brief: Liquid Glass navigation surface (skipped on purpose to keep glass minimal), Images Slider (no gallery assets yet), and standalone per-project case-study pages (the dialog carries the stack and highlights for now).
+
+## Work content
+
+The Work section lists twelve projects from the public repositories at github.com/Lunatic5202, sorted into Flagship Projects, Products & Utilities and Experiments. Open Source is empty on purpose until something there is ready. Descriptions, stacks and highlights are taken from each repository's own README, and caveats such as "synthetic data" or "prototype, not validated" are shown in the project dialog.
+
+- Statuses are only Released, In development or Experimental.
+- Artwork is never cropped: every image uses `object-fit: contain` in a frame that follows its real aspect ratio, and wide screenshots open full-width in the dialog.
+- Screenshots are either from the project's own repository or captured from the running app. Where there is no honest screenshot yet, a plain "No screenshot yet" frame is shown. Add one by setting `image`, `width` and `height` on the project in `src/data/projects.ts`.
+- Private repositories are not listed.
 
 ## Performance, SEO and accessibility
 
