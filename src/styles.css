@@ -170,3 +170,25 @@ body:after{content:'';position:fixed;inset:0;z-index:90;pointer-events:none;opac
 .project-detail.is-wide .detail-copy{align-self:start}
 .art-shot img{padding:3%}
 @media(min-width:721px){.project-detail:not(.is-wide)>.project-art{position:sticky;top:0;align-self:start;height:min(92vh,880px)}}
+
+/* Redesign preserve pass: give the studio claim a measurable, scannable anchor. */
+.manifesto{grid-template-areas:'label copy mark' 'proof proof proof';row-gap:22px}
+.manifesto>.section-number,.manifesto>.eyebrow{grid-area:label}
+.manifesto>p{grid-area:copy}
+.manifesto-mark{grid-area:mark}
+.manifesto-proof{grid-area:proof;display:flex;align-items:center;gap:clamp(18px,4vw,58px);padding-top:18px;border-top:1px solid #ffffff15;color:#899396;font:10px var(--mono);letter-spacing:.11em;text-transform:uppercase}
+.manifesto-proof span{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.manifesto-proof b{font:500 22px var(--display);letter-spacing:-.03em;color:#d7e4e7}
+.hero-meta span:last-child{color:#c1c9cc}
+.hero-meta span:last-child::before{content:'◌';margin-right:8px;color:var(--cyan)}
+@media(max-width:720px){
+  .manifesto{grid-template-areas:'label mark' 'copy mark' 'proof proof';row-gap:18px}
+  .manifesto-proof{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:16px;letter-spacing:.06em}
+  .manifesto-proof span{display:block;white-space:normal;line-height:1.5}
+  .manifesto-proof b{display:block;margin-bottom:3px;font-size:20px}
+}
+@media(max-width:420px){
+  .manifesto-proof{grid-template-columns:1fr;gap:8px}
+  .manifesto-proof span{display:flex;gap:9px;align-items:baseline}
+  .manifesto-proof b{margin:0;min-width:24px}
+}

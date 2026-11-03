@@ -18,5 +18,11 @@ function siteUrl(site: string) {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', 'VITE_')
-  return { plugins: [react(), siteUrl(env.VITE_SITE_URL ?? '')] }
+  return {
+    plugins: [react(), siteUrl(env.VITE_SITE_URL ?? '')],
+    server: {
+      host: true,
+      allowedHosts: true,
+    },
+  }
 })
