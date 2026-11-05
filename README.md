@@ -23,7 +23,8 @@ Artwork is loaded from the projects' own public repositories and falls back to a
 | Floating navbar: hides while scrolling down, returns on scroll up or keyboard focus | Header | Motion |
 | Sliding nav underline, scroll progress line | Header | Motion `layoutId`, `useScroll` |
 | Magnetic buttons | Hero CTA, contact | Motion springs |
-| Sticky scroll reveal: text scrolls, one pinned artwork panel crossfades | Work (wide screens) | Motion |
+| Works Wheel: a ring of cards opens into a scroll-driven 3D drum; only the front card opens its dialog | Work (wide screens) | One rAF loop writing CSS 3D transforms |
+| Black hole: ray-marched lensing, accretion disk and star field; pauses off screen, one still frame under reduced motion | Hero | Own WebGL shader (`src/components/ui/optimized-black-hole-utils/renderer.ts`) |
 | Tracing beam beside the project list | Work (wide screens) | Motion `useScroll` |
 | Direction-aware hover: details panel enters and leaves from the pointer's edge | Project images | Motion controls |
 | 3D tilt with pointer light | Project images | Motion springs |
@@ -97,3 +98,7 @@ Keep the portfolio factual: project cards must link to real repositories/release
 ## License
 
 LUNEVRA Technologies is a proprietary project. No license is granted to copy, modify, distribute, or commercially reuse this repository without prior written permission from the relevant rights holder. Third-party packages and assets remain subject to their respective licenses; see the project dependencies and their upstream license terms.
+
+## Tailwind and shadcn
+
+Tailwind v4 and a shadcn-style `@/` alias (`@/components/ui`, `@/lib/utils`) were added for the Works Wheel and black-hole components. `src/index.css` loads Tailwind *without* its preflight reset and puts `styles.css` in a lower `legacy` layer, so the existing site CSS is unchanged and utilities still win on the elements that use them. The Works Wheel is adapted from the CrafterUI component (see the header of `src/components/ui/works-wheel.tsx` for what changed). The black-hole renderer is original to this repo. The old `Showcase` sticky-scroll component is still in `src/components` but no longer used on wide screens.

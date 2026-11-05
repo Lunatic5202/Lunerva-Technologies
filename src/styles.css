@@ -209,3 +209,10 @@ body:after{content:'';position:fixed;inset:0;z-index:90;pointer-events:none;opac
 .project-spotlight{height:auto;aspect-ratio:var(--ar,1.42)}
 .project-spotlight .project-image-button{width:100%;height:100%;aspect-ratio:auto}
 .showcase-panel .project-spotlight{height:100%;aspect-ratio:auto}
+
+/* Work: the wheel runs full-bleed on wide screens, past the section's side padding. */
+.work-wheel{position:relative;margin:0 -10.5vw;height:min(84vh,800px);min-height:560px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+
+/* Hero: the black hole is a full-bleed WebGL backdrop. The hero's own gradient shows until it fades in,
+   and stays as the fallback where WebGL is unavailable or reduced. */
+.hero-blackhole{position:absolute;inset:0;z-index:0;pointer-events:none}

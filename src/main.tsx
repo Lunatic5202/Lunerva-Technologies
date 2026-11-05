@@ -7,7 +7,7 @@ import '@fontsource/dm-mono/400.css'
 import '@fontsource/dm-mono/500.css'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import './styles.css'
+import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

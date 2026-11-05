@@ -7,6 +7,7 @@ import { SplitChars } from './SplitChars'
 import { ease } from '../lib/motion'
 import { projects } from '../data/projects'
 import { ShinyText } from './ShinyText'
+import BlackHole from './ui/optimized-black-hole'
 
 const rise = (delay: number, reduce: boolean | null) => ({
   initial: reduce ? false : { opacity: 0, y: 24 },
@@ -31,8 +32,6 @@ export function Hero() {
   const sy = useSpring(py, soft)
   const farX = useTransform(sx, [0, 1], [10, -10])
   const farY = useTransform(sy, [0, 1], [8, -8])
-  const nearX = useTransform(sx, [0, 1], [24, -24])
-  const nearY = useTransform(sy, [0, 1], [18, -18])
   const tagX = useSpring(useMotionValue(0), { stiffness: 260, damping: 28 })
   const tagY = useSpring(useMotionValue(0), { stiffness: 260, damping: 28 })
   const tagOpacity = useSpring(useMotionValue(0), { stiffness: 200, damping: 30 })
@@ -63,6 +62,9 @@ export function Hero() {
 
   return (
     <section className="hero" id="home" ref={ref} onPointerMove={track} onPointerLeave={release}>
+      <div className="hero-blackhole" aria-hidden="true">
+        <BlackHole />
+      </div>
       <div className="hero-spotlight" aria-hidden="true" />
       <div className="hero-meta">
         <span>INDEPENDENT TECHNOLOGY STUDIO</span>
@@ -96,18 +98,12 @@ export function Hero() {
         <div className="hero-visual" aria-hidden="true">
           <motion.div className="hero-visual-inner" style={reduce ? undefined : { y: visualY }}>
             <motion.div className="hero-layer" style={layer(farX, farY)}>
-              <div className="hero-coordinate coordinate-one">FIG. 01&nbsp; / &nbsp;LUNAR SIGNAL</div>
+              <div className="hero-coordinate coordinate-one">FIG. 01&nbsp; / &nbsp;EVENT HORIZON</div>
               <div className="hero-orbit orbit-one" />
               <div className="hero-orbit orbit-two" />
               <div className="hero-crosshair crosshair-h" />
               <div className="hero-crosshair crosshair-v" />
               <div className="hero-coordinate coordinate-two">INDEPENDENT&nbsp; / &nbsp;CREATIVE&nbsp; / &nbsp;TECHNOLOGY</div>
-            </motion.div>
-            <motion.div className="hero-layer" style={layer(nearX, nearY)}>
-              <div className="hero-eclipse">
-                <i />
-              </div>
-              <div className="hero-star">✳</div>
             </motion.div>
           </motion.div>
         </div>

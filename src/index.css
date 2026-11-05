@@ -1,0 +1,51 @@
+/*
+ * Entry stylesheet: Tailwind v4 alongside the studio's hand-written CSS.
+ *
+ * - Tailwind's preflight (its global reset) is deliberately NOT imported. The existing site styles
+ *   headings, buttons, lists and links itself, and a reset would restyle all of it.
+ * - The existing stylesheet is placed in its own `legacy` layer, below `utilities`. Unlayered CSS
+ *   would always beat Tailwind utilities (e.g. the site's `button { color: inherit }` would defeat
+ *   `text-foreground`); inside a lower layer, utilities win on the elements that use them and the
+ *   old rules behave exactly as before everywhere else.
+ * - Components copied in from shadcn-style sources therefore need to reset their own list, button
+ *   and image defaults (see `src/components/ui/works-wheel.tsx`).
+ */
+@layer theme, base, legacy, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import './styles.css' layer(legacy);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/*
+ * Design tokens, mapped onto the LUNEVRA palette (see :root in styles.css).
+ * They live in Tailwind's own `--color-*` namespace on purpose: the site already uses `--muted`
+ * and `--bg` for other things, and shadcn's usual `--muted` would silently collide with them.
+ */
+@theme {
+  --color-background: #090a0b;
+  --color-foreground: #e8e9e8;
+  --color-card: #101214;
+  --color-card-foreground: #e8e9e8;
+  --color-popover: #101214;
+  --color-popover-foreground: #e8e9e8;
+  --color-primary: #d7dbde;
+  --color-primary-foreground: #090a0b;
+  --color-secondary: #16191b;
+  --color-secondary-foreground: #e8e9e8;
+  --color-muted: #101214;
+  --color-muted-foreground: #92969a;
+  --color-accent: #1b2024;
+  --color-accent-foreground: #e8e9e8;
+  --color-destructive: #d9776b;
+  --color-border: #282b2e;
+  --color-input: #282b2e;
+  --color-ring: #9ac5d1;
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+
+  --font-sans: 'DM Sans Variable', 'DM Sans', Arial, sans-serif;
+  --font-display: 'Manrope Variable', 'Manrope', 'DM Sans Variable', 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}

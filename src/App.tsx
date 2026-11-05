@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence } from 'motion/react'
 import { ArrowUpRight } from 'lucide-react'
 import { countFor, filters, nav, projects, type Filter, type Project } from './data/projects'
@@ -7,7 +7,7 @@ import { Header, Mark } from './components/Header'
 import { Hero } from './components/Hero'
 import { MagneticLink } from './components/MagneticLink'
 import { ProjectRow } from './components/ProjectRow'
-import { Showcase } from './components/Showcase'
+import { WorksWheel, type WorksWheelItem } from './components/ui/works-wheel'
 import { BackgroundLines } from './components/BackgroundLines'
 import { TextHover } from './components/TextHover'
 import { useMediaQuery } from './lib/useMediaQuery'
@@ -47,6 +47,22 @@ export default function App() {
 
   const wideLayout = useMediaQuery('(min-width: 1051px)')
   const visible = projects.filter(p => filter === 'All work' || p.discipline === filter)
+  // Cover art comes straight from the project data. Projects with no honest screenshot yet
+  // get no `image`, and the wheel draws a labelled "No screenshot yet" card for them.
+  const wheelItems = useMemo<WorksWheelItem[]>(
+    () =>
+      projects
+        .filter(p => filter === 'All work' || p.discipline === filter)
+        .map(p => ({
+          title: p.name,
+          image: p.image,
+          srcSet: p.srcSet,
+          alt: p.imageAlt,
+          meta: p.status + ' · ' + p.category,
+          href: '#project/' + p.slug,
+        })),
+    [filter],
+  )
 
   const opener = useRef<HTMLElement | null>(null)
   const restoreFocus = useCallback(() => opener.current?.focus(), [])
@@ -156,7 +172,9 @@ export default function App() {
                 {visible.length ? (
                   <div key={filter} className="project-group">
                     {wideLayout ? (
-                      <Showcase projects={visible} onOpen={open} />
+                      <div className="work-wheel">
+                        <WorksWheel items={wheelItems} label="Selected Work" action="Open" onOpen={i => open(visible[i])} />
+                      </div>
                     ) : (
                       visible.map(project => <ProjectRow key={project.slug} project={project} onOpen={open} />)
                     )}
