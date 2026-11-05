@@ -6,6 +6,7 @@ import { MagneticLink } from './MagneticLink'
 import { SplitChars } from './SplitChars'
 import { ease } from '../lib/motion'
 import { projects } from '../data/projects'
+import { ShinyText } from './ShinyText'
 
 const rise = (delay: number, reduce: boolean | null) => ({
   initial: reduce ? false : { opacity: 0, y: 24 },
@@ -84,6 +85,7 @@ export function Hero() {
               delay={0.4}
               lines={[{ text: 'Independent by design.' }, { text: 'Built to create.', em: true }]}
             />
+            <ShinyText className="hero-shine" aria-hidden="true">LUNEVRA / 2026</ShinyText>
           </p>
           <motion.div {...rise(1.0, reduce)}>
             <MagneticLink className="hero-cta" href="#work">

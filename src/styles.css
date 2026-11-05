@@ -192,3 +192,20 @@ body:after{content:'';position:fixed;inset:0;z-index:90;pointer-events:none;opac
   .manifesto-proof span{display:flex;gap:9px;align-items:baseline}
   .manifesto-proof b{margin:0;min-width:24px}
 }
+
+/* Sourced interaction patterns, adapted to the LUNEVRA system. */
+.spotlight-card{position:relative;isolation:isolate;overflow:hidden;background:#101315}
+.spotlight-card__light,.spotlight-card__edge{position:absolute;inset:0;pointer-events:none;border-radius:inherit}
+.spotlight-card__light{z-index:2;opacity:var(--spotlight-opacity,0);background:radial-gradient(230px circle at var(--spotlight-x,50%) var(--spotlight-y,50%),color-mix(in srgb,var(--spotlight-color) 20%,transparent),transparent 68%);mix-blend-mode:screen;transition:opacity .35s ease}
+.spotlight-card__edge{z-index:5;padding:1px;opacity:var(--spotlight-opacity,0);background:radial-gradient(190px circle at var(--spotlight-x,50%) var(--spotlight-y,50%),color-mix(in srgb,var(--spotlight-color) 65%,transparent),transparent 68%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;transition:opacity .35s ease}
+.project-spotlight{width:100%;height:100%}
+.project-spotlight .project-image-button{position:relative;z-index:3;border-color:#ffffff14}
+.shiny-text{display:inline-block;color:#a7bdc2;background:linear-gradient(120deg,currentColor 35%,#f4fbfc 48%,currentColor 61%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shiny-sweep 5.5s cubic-bezier(.2,.7,.2,1) .7s 1 both;font:500 10px var(--mono);letter-spacing:.16em;white-space:nowrap}
+.hero-shine{display:block;width:max-content;margin-top:19px;opacity:.58}
+@keyframes shiny-sweep{from{background-position:180% 0;opacity:0}15%{opacity:.58}to{background-position:-40% 0;opacity:.58}}
+@media(prefers-reduced-motion:reduce){.shiny-text{animation:none;background:none;color:#a7bdc2}.spotlight-card__light,.spotlight-card__edge{transition:none}}
+@media(max-width:720px){.hero-shine{margin-top:15px;font-size:9px}.spotlight-card__light,.spotlight-card__edge{display:none}}
+
+.project-spotlight{height:auto;aspect-ratio:var(--ar,1.42)}
+.project-spotlight .project-image-button{width:100%;height:100%;aspect-ratio:auto}
+.showcase-panel .project-spotlight{height:100%;aspect-ratio:auto}

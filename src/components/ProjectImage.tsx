@@ -11,6 +11,7 @@ import { ArrowUpRight } from 'lucide-react'
 import type { Project } from '../data/projects'
 import { Artwork } from './Artwork'
 import { ease } from '../lib/motion'
+import { SpotlightCard } from './SpotlightCard'
 
 type Side = 'top' | 'right' | 'bottom' | 'left'
 const offscreen: Record<Side, { x: string | number; y: string | number }> = {
@@ -81,34 +82,36 @@ export function ProjectImage({ project, onOpen, parallax, entrance }: Props) {
   }
 
   return (
-    <motion.button
-      className="project-image-button"
-      onClick={() => onOpen(project)}
-      aria-label={project.status + '. View details: ' + project.name}
-      initial={entrance && !reduce ? { clipPath: 'inset(0 0 100% 0)' } : undefined}
-      whileInView={entrance ? { clipPath: 'inset(0 0 0% 0)' } : undefined}
-      viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-      transition={{ duration: 1.1, ease, delay: 0.1 }}
-      style={{
-        ['--ar' as string]: aspect(project),
-        ...(reduce ? null : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 1100 }),
-      }}
-      onPointerEnter={enter}
-      onPointerMove={move}
-      onPointerLeave={leave}
-      onFocus={event => event.currentTarget.matches(':focus-visible') && show('bottom')}
-      onBlur={() => hide('bottom')}
-    >
-      <Artwork project={project} parallax={parallax} />
-      <motion.span className="dir-overlay" aria-hidden="true" initial={offscreen.left} animate={overlay}>
-        <small>
-          <i className={project.status === 'Released' ? 'released' : ''} />
-          {project.status.toUpperCase()}
-        </small>
-        <b>
-          View details <ArrowUpRight size={14} />
-        </b>
-      </motion.span>
-    </motion.button>
+    <SpotlightCard className="project-spotlight" style={{ ['--ar' as string]: aspect(project) }}>
+      <motion.button
+        className="project-image-button"
+        onClick={() => onOpen(project)}
+        aria-label={project.status + '. View details: ' + project.name}
+        initial={entrance && !reduce ? { clipPath: 'inset(0 0 100% 0)' } : undefined}
+        whileInView={entrance ? { clipPath: 'inset(0 0 0% 0)' } : undefined}
+        viewport={{ once: true, margin: '0px 0px -12% 0px' }}
+        transition={{ duration: 1.1, ease, delay: 0.1 }}
+        style={{
+          ['--ar' as string]: aspect(project),
+          ...(reduce ? null : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 1100 }),
+        }}
+        onPointerEnter={enter}
+        onPointerMove={move}
+        onPointerLeave={leave}
+        onFocus={event => event.currentTarget.matches(':focus-visible') && show('bottom')}
+        onBlur={() => hide('bottom')}
+      >
+        <Artwork project={project} parallax={parallax} />
+        <motion.span className="dir-overlay" aria-hidden="true" initial={offscreen.left} animate={overlay}>
+          <small>
+            <i className={project.status === 'Released' ? 'released' : ''} />
+            {project.status.toUpperCase()}
+          </small>
+          <b>
+            View details <ArrowUpRight size={14} />
+          </b>
+        </motion.span>
+      </motion.button>
+    </SpotlightCard>
   )
 }
