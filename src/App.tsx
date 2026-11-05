@@ -7,7 +7,7 @@ import { Header, Mark } from './components/Header'
 import { Hero } from './components/Hero'
 import { MagneticLink } from './components/MagneticLink'
 import { ProjectRow } from './components/ProjectRow'
-import { WorksWheel } from './components/WorksWheel'
+import { Showcase } from './components/Showcase'
 import { BackgroundLines } from './components/BackgroundLines'
 import { TextHover } from './components/TextHover'
 import { useMediaQuery } from './lib/useMediaQuery'
@@ -156,7 +156,7 @@ export default function App() {
                 {visible.length ? (
                   <div key={filter} className="project-group">
                     {wideLayout ? (
-                      <WorksWheel items={visible} onOpen={open} />
+                      <Showcase projects={visible} onOpen={open} />
                     ) : (
                       visible.map(project => <ProjectRow key={project.slug} project={project} onOpen={open} />)
                     )}
